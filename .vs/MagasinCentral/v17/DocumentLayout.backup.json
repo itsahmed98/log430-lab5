@@ -1,0 +1,187 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\projetsDev\\log430-lab4\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5120D633-E62A-4D21-A080-D4CE05ECF0B3}|MagasinCentral.Tests\\MagasinCentral.Tests.csproj|e:\\projetsdev\\log430-lab4\\magasincentral.tests\\unittests\\services\\rapportservicetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5120D633-E62A-4D21-A080-D4CE05ECF0B3}|MagasinCentral.Tests\\MagasinCentral.Tests.csproj|solutionrelative:magasincentral.tests\\unittests\\services\\rapportservicetests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5120D633-E62A-4D21-A080-D4CE05ECF0B3}|MagasinCentral.Tests\\MagasinCentral.Tests.csproj|e:\\projetsdev\\log430-lab4\\magasincentral.tests\\unittests\\services\\produitservicetest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5120D633-E62A-4D21-A080-D4CE05ECF0B3}|MagasinCentral.Tests\\MagasinCentral.Tests.csproj|solutionrelative:magasincentral.tests\\unittests\\services\\produitservicetest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5120D633-E62A-4D21-A080-D4CE05ECF0B3}|MagasinCentral.Tests\\MagasinCentral.Tests.csproj|e:\\projetsdev\\log430-lab4\\magasincentral.tests\\unittests\\services\\performancesservicetest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5120D633-E62A-4D21-A080-D4CE05ECF0B3}|MagasinCentral.Tests\\MagasinCentral.Tests.csproj|solutionrelative:magasincentral.tests\\unittests\\services\\performancesservicetest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5120D633-E62A-4D21-A080-D4CE05ECF0B3}|MagasinCentral.Tests\\MagasinCentral.Tests.csproj|e:\\projetsdev\\log430-lab4\\magasincentral.tests\\unittests\\controllers\\produitcontrollertest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5120D633-E62A-4D21-A080-D4CE05ECF0B3}|MagasinCentral.Tests\\MagasinCentral.Tests.csproj|solutionrelative:magasincentral.tests\\unittests\\controllers\\produitcontrollertest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5120D633-E62A-4D21-A080-D4CE05ECF0B3}|MagasinCentral.Tests\\MagasinCentral.Tests.csproj|e:\\projetsdev\\log430-lab4\\magasincentral.tests\\unittests\\controllers\\performancecontrollertest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5120D633-E62A-4D21-A080-D4CE05ECF0B3}|MagasinCentral.Tests\\MagasinCentral.Tests.csproj|solutionrelative:magasincentral.tests\\unittests\\controllers\\performancecontrollertest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|e:\\projetsdev\\log430-lab4\\magasincentral\\services\\performanceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|solutionrelative:magasincentral\\services\\performanceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|e:\\projetsdev\\log430-lab4\\magasincentral\\services\\rapportservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|solutionrelative:magasincentral\\services\\rapportservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|e:\\projetsdev\\log430-lab4\\magasincentral\\services\\produitservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|solutionrelative:magasincentral\\services\\produitservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|e:\\projetsdev\\log430-lab4\\magasincentral\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|solutionrelative:magasincentral\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RapportServiceTests.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab4\\MagasinCentral.Tests\\UnitTests\\Services\\RapportServiceTests.cs",
+              "RelativeDocumentMoniker": "MagasinCentral.Tests\\UnitTests\\Services\\RapportServiceTests.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab4\\MagasinCentral.Tests\\UnitTests\\Services\\RapportServiceTests.cs",
+              "RelativeToolTip": "MagasinCentral.Tests\\UnitTests\\Services\\RapportServiceTests.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-01T23:20:17.523Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PerformancesServiceTest.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab4\\MagasinCentral.Tests\\UnitTests\\Services\\PerformancesServiceTest.cs",
+              "RelativeDocumentMoniker": "MagasinCentral.Tests\\UnitTests\\Services\\PerformancesServiceTest.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab4\\MagasinCentral.Tests\\UnitTests\\Services\\PerformancesServiceTest.cs",
+              "RelativeToolTip": "MagasinCentral.Tests\\UnitTests\\Services\\PerformancesServiceTest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-01T23:20:03.197Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ProduitControllerTest.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab4\\MagasinCentral.Tests\\UnitTests\\Controllers\\ProduitControllerTest.cs",
+              "RelativeDocumentMoniker": "MagasinCentral.Tests\\UnitTests\\Controllers\\ProduitControllerTest.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab4\\MagasinCentral.Tests\\UnitTests\\Controllers\\ProduitControllerTest.cs",
+              "RelativeToolTip": "MagasinCentral.Tests\\UnitTests\\Controllers\\ProduitControllerTest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-01T23:19:31.301Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "PerformanceControllerTest.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab4\\MagasinCentral.Tests\\UnitTests\\Controllers\\PerformanceControllerTest.cs",
+              "RelativeDocumentMoniker": "MagasinCentral.Tests\\UnitTests\\Controllers\\PerformanceControllerTest.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab4\\MagasinCentral.Tests\\UnitTests\\Controllers\\PerformanceControllerTest.cs",
+              "RelativeToolTip": "MagasinCentral.Tests\\UnitTests\\Controllers\\PerformanceControllerTest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-01T23:19:27.215Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ProduitServiceTest.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab4\\MagasinCentral.Tests\\UnitTests\\Services\\ProduitServiceTest.cs",
+              "RelativeDocumentMoniker": "MagasinCentral.Tests\\UnitTests\\Services\\ProduitServiceTest.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab4\\MagasinCentral.Tests\\UnitTests\\Services\\ProduitServiceTest.cs",
+              "RelativeToolTip": "MagasinCentral.Tests\\UnitTests\\Services\\ProduitServiceTest.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAowDcAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-01T23:18:26.334Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PerformanceService.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab4\\MagasinCentral\\Services\\PerformanceService.cs",
+              "RelativeDocumentMoniker": "MagasinCentral\\Services\\PerformanceService.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab4\\MagasinCentral\\Services\\PerformanceService.cs",
+              "RelativeToolTip": "MagasinCentral\\Services\\PerformanceService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-01T22:53:29.205Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ProduitService.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab4\\MagasinCentral\\Services\\ProduitService.cs",
+              "RelativeDocumentMoniker": "MagasinCentral\\Services\\ProduitService.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab4\\MagasinCentral\\Services\\ProduitService.cs",
+              "RelativeToolTip": "MagasinCentral\\Services\\ProduitService.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAQwCQAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-01T22:42:03.38Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "RapportService.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab4\\MagasinCentral\\Services\\RapportService.cs",
+              "RelativeDocumentMoniker": "MagasinCentral\\Services\\RapportService.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab4\\MagasinCentral\\Services\\RapportService.cs",
+              "RelativeToolTip": "MagasinCentral\\Services\\RapportService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-01T22:21:00.61Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Program.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab4\\MagasinCentral\\Program.cs",
+              "RelativeDocumentMoniker": "MagasinCentral\\Program.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab4\\MagasinCentral\\Program.cs",
+              "RelativeToolTip": "MagasinCentral\\Program.cs",
+              "ViewState": "AgIAAFgAAAAAAAAAAAAIwBcAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-01T22:20:35.622Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

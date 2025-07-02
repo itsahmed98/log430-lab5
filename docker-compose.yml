@@ -1,0 +1,153 @@
+services:
+
+  db:
+    image: postgres:15
+    container_name: magasincentral-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentraldb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app1:
+    image: magasincentral-api:latest
+    container_name: app1
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Username=magasinuser;Password=magasinpass;Database=magasincentraldb"
+      JwtSettings__Issuer: "MagasinCentralAPI"
+      JwtSettings__Audience: "MagasinCentralClient"
+      JwtSettings__Secret: "MON_CLE_SECRETE_TRES_LONGUE_ET_COMPLEXE"
+      JwtSettings__TokenValidityInMinutes: "60"
+    depends_on:
+      - db
+    expose:
+      - "80"
+
+  app2:
+    image: magasincentral-api:latest
+    container_name: app2
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Username=magasinuser;Password=magasinpass;Database=magasincentraldb"
+      JwtSettings__Issuer: "MagasinCentralAPI"
+      JwtSettings__Audience: "MagasinCentralClient"
+      JwtSettings__Secret: "MON_CLE_SECRETE_TRES_LONGUE_ET_COMPLEXE"
+      JwtSettings__TokenValidityInMinutes: "60"
+    depends_on:
+      - db
+    expose:
+      - "80"
+  
+  app3:
+    image: magasincentral-api:latest
+    container_name: app3
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Username=magasinuser;Password=magasinpass;Database=magasincentraldb"
+      JwtSettings__Issuer: "MagasinCentralAPI"
+      JwtSettings__Audience: "MagasinCentralClient"
+      JwtSettings__Secret: "MON_CLE_SECRETE_TRES_LONGUE_ET_COMPLEXE"
+      JwtSettings__TokenValidityInMinutes: "60"
+    depends_on:
+      - db
+    expose:
+      - "80"
+
+  # app4:
+  #   image: magasincentral-api:latest
+  #   container_name: app4
+  #   environment:
+  #     ASPNETCORE_ENVIRONMENT: "Production"
+  #     ASPNETCORE_URLS: "http://+:80"
+  #     ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Username=magasinuser;Password=magasinpass;Database=magasincentraldb"
+  #     JwtSettings__Issuer: "MagasinCentralAPI"
+  #     JwtSettings__Audience: "MagasinCentralClient"
+  #     JwtSettings__Secret: "MON_CLE_SECRETE_TRES_LONGUE_ET_COMPLEXE"
+  #     JwtSettings__TokenValidityInMinutes: "60"
+  #   depends_on:
+  #     - db
+  #   expose:
+  #     - "80"
+
+  # app5:
+  #   image: magasincentral-api:latest
+  #   container_name: app5
+  #   environment:
+  #     ASPNETCORE_ENVIRONMENT: "Production"
+  #     ASPNETCORE_URLS: "http://+:80"
+  #     ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Username=magasinuser;Password=magasinpass;Database=magasincentraldb"
+  #     JwtSettings__Issuer: "MagasinCentralAPI"
+  #     JwtSettings__Audience: "MagasinCentralClient"
+  #     JwtSettings__Secret: "MON_CLE_SECRETE_TRES_LONGUE_ET_COMPLEXE"
+  #     JwtSettings__TokenValidityInMinutes: "60"
+  #   depends_on:
+  #     - db
+  #   expose:
+  #     - "80"
+
+    # Prometheus pour les métriques
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: magasincentral-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    depends_on:
+      - app1
+      - app2
+      - app3
+      # - app4
+      # - app5
+
+  # Grafana dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: magasincentral-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: magasincentral-node-exporter
+    restart: unless-stopped
+    # expose le port 9100 en interne
+    ports:
+      - "9100:9100"
+
+  nginx:
+    image: nginx:stable
+    container_name: magasincentral-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app1
+      - app2
+      - app3
+      # - app4
+      # - app5
+
+volumes:
+  db_data:
+  grafana_data:
+  prometheus_data:
