@@ -61,37 +61,33 @@ services:
     expose:
       - "80"
 
-  # app4:
-  #   image: magasincentral-api:latest
-  #   container_name: app4
-  #   environment:
-  #     ASPNETCORE_ENVIRONMENT: "Production"
-  #     ASPNETCORE_URLS: "http://+:80"
-  #     ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Username=magasinuser;Password=magasinpass;Database=magasincentraldb"
-  #     JwtSettings__Issuer: "MagasinCentralAPI"
-  #     JwtSettings__Audience: "MagasinCentralClient"
-  #     JwtSettings__Secret: "MON_CLE_SECRETE_TRES_LONGUE_ET_COMPLEXE"
-  #     JwtSettings__TokenValidityInMinutes: "60"
-  #   depends_on:
-  #     - db
-  #   expose:
-  #     - "80"
+  catalogue-service-db:
+    image: postgres:15 
+    container_name: catalogue-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: catalogueMcServiceDb
+    volumes:
+      - catalogue-db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
 
-  # app5:
-  #   image: magasincentral-api:latest
-  #   container_name: app5
-  #   environment:
-  #     ASPNETCORE_ENVIRONMENT: "Production"
-  #     ASPNETCORE_URLS: "http://+:80"
-  #     ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Username=magasinuser;Password=magasinpass;Database=magasincentraldb"
-  #     JwtSettings__Issuer: "MagasinCentralAPI"
-  #     JwtSettings__Audience: "MagasinCentralClient"
-  #     JwtSettings__Secret: "MON_CLE_SECRETE_TRES_LONGUE_ET_COMPLEXE"
-  #     JwtSettings__TokenValidityInMinutes: "60"
-  #   depends_on:
-  #     - db
-  #   expose:
-  #     - "80"
+  catalogue-api:
+    build:
+      context: ./CatalogueMcService
+      dockerfile: Dockerfile
+    image: catalogue-mc-service:latest
+    container_name: magasincentral-catalogue
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__DefaultConnection: "Host=catalogue-service-db;Port=5432;Username=magasinuser;Password=magasinpass;Database=catalogueMcServiceDb"
+    depends_on:
+      - catalogue-service-db
+    ports:
+      - "5001:80"
 
     # Prometheus pour les métriques
   prometheus:
@@ -107,8 +103,6 @@ services:
       - app1
       - app2
       - app3
-      # - app4
-      # - app5
 
   # Grafana dashboard
   grafana:
@@ -129,7 +123,6 @@ services:
     image: prom/node-exporter:latest
     container_name: magasincentral-node-exporter
     restart: unless-stopped
-    # expose le port 9100 en interne
     ports:
       - "9100:9100"
 
@@ -144,10 +137,56 @@ services:
       - app1
       - app2
       - app3
-      # - app4
-      # - app5
 
 volumes:
   db_data:
   grafana_data:
   prometheus_data:
+  catalogue-db_data:
+
+
+# {NomService}-service-db:
+#     image: postgres:15 
+#     container_name: {NomService}-db
+#     restart: unless-stopped
+#     environment:
+#       POSTGRES_USER: magasinuser
+#       POSTGRES_PASSWORD: magasinpass
+#       POSTGRES_DB: {NomService}McServiceDb
+#     volumes:
+#       - {NomService}-db_data:/var/lib/postgresql/data
+#     ports:
+#       - "5433:5432"
+
+#   {NomService}-api:
+#     build:
+#       context: ./{NomService}McService
+#       dockerfile: Dockerfile
+#     image: {NomService}-mc-service:latest
+#     container_name: magasincentral-{NomService}
+#     environment:
+#       ASPNETCORE_ENVIRONMENT: "Production"
+#       ASPNETCORE_URLS: "http://+:80"
+#       ConnectionStrings__DefaultConnection: "Host={NomService}-service-db;Port=5432;Username=magasinuser;Password=magasinpass;Database={NomService}McServiceDb"
+#     depends_on:
+#       - {NomService}-service-db
+#     ports:
+#       - "5001:80"
+
+# # Stage 1: build
+# FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# WORKDIR /src
+
+# # copy csproj and restore
+# COPY ["{NomService}McService.csproj", "./"]
+# RUN dotnet restore "./{NomService}McService.csproj"
+
+# # copy everything else and publish
+# COPY . .
+# RUN dotnet publish "{NomService}McService.csproj" -c Release -o /app/publish
+
+# # Stage 2: runtime
+# FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+# WORKDIR /app
+# COPY --from=build /app/publish .
+# ENTRYPOINT ["dotnet", "{NomService}McService.dll"]

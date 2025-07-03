@@ -32,7 +32,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "Catalogue Service API",
         Version = "v1",
-        Description = "API pour gérer les produits"
+        Description = "API pour gï¿½rer les produits"
     });
 
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -48,24 +48,26 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Produit Service API V1");
-    });
-}
-else
-{
-    app.UseExceptionHandler("/error");
 }
 
-app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalogue Service API V1");
+    c.RoutePrefix = "swagger";
+});
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseRouting();
+
+app.UseCors("AllowAll");
 
 app.MapControllers();
 
