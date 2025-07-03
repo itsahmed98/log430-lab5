@@ -1,0 +1,6 @@
+@CatalogueMcService_HostAddress = http://localhost:5239
+
+GET {{CatalogueMcService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
