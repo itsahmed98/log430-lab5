@@ -53,6 +53,10 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
+app.UseRouting();
+
+app.UseCors("AllowAll");
+
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -64,10 +68,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
-
-app.UseRouting();
-
-app.UseCors("AllowAll");
 
 app.MapControllers();
 

@@ -116,6 +116,36 @@ services:
       - inventaire-service-db
     ports:
       - "5002:80"
+  
+  vente-service-db:
+    image: postgres:15 
+    container_name: vente-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: venteMcServiceDb
+    volumes:
+      - vente-db_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+
+  vente-api:
+    build:
+      context: ./venteMcService
+      dockerfile: Dockerfile
+    image: vente-mc-service:latest
+    container_name: magasincentral-vente
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__DefaultConnection: "Host=vente-service-db;Port=5432;Username=magasinuser;Password=magasinpass;Database=venteMcServiceDb"
+    depends_on:
+      - vente-service-db
+      - catalogue-api
+      - inventaire-api
+    ports:
+      - "5003:80"
 
     # Prometheus pour les métriques
   prometheus:
@@ -170,6 +200,7 @@ volumes:
   db_data:
   catalogue-db_data:
   inventaire-db_data:
+  vente-db_data:
   grafana_data:
   prometheus_data:
 
