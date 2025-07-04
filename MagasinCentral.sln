@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogueMcService.Test", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventaireMcService", "InventaireMcService\InventaireMcService.csproj", "{D11A82CA-E429-47F4-9156-3770E8C7C786}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventaireMcService.Test", "InventaireMcService.Test\InventaireMcService.Test.csproj", "{47BA33EE-0F53-4BB2-952A-417977FFF8B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{D11A82CA-E429-47F4-9156-3770E8C7C786}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D11A82CA-E429-47F4-9156-3770E8C7C786}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D11A82CA-E429-47F4-9156-3770E8C7C786}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47BA33EE-0F53-4BB2-952A-417977FFF8B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47BA33EE-0F53-4BB2-952A-417977FFF8B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47BA33EE-0F53-4BB2-952A-417977FFF8B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47BA33EE-0F53-4BB2-952A-417977FFF8B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
