@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogueMcService", "Catal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogueMcService.Test", "CatalogueMcService.Test\CatalogueMcService.Test.csproj", "{A1AD6AB0-7BE3-44F0-A83B-DEACD14A6768}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InventaireMcService", "InventaireMcService\InventaireMcService.csproj", "{D11A82CA-E429-47F4-9156-3770E8C7C786}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{A1AD6AB0-7BE3-44F0-A83B-DEACD14A6768}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1AD6AB0-7BE3-44F0-A83B-DEACD14A6768}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1AD6AB0-7BE3-44F0-A83B-DEACD14A6768}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D11A82CA-E429-47F4-9156-3770E8C7C786}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D11A82CA-E429-47F4-9156-3770E8C7C786}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D11A82CA-E429-47F4-9156-3770E8C7C786}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D11A82CA-E429-47F4-9156-3770E8C7C786}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
