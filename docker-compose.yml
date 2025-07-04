@@ -88,6 +88,34 @@ services:
       - catalogue-service-db
     ports:
       - "5001:80"
+  
+  inventaire-service-db:
+    image: postgres:15 
+    container_name: inventaire-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: inventaireMcServiceDb
+    volumes:
+      - inventaire-db_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+  inventaire-api:
+    build:
+      context: ./inventaireMcService
+      dockerfile: Dockerfile
+    image: inventaire-mc-service:latest
+    container_name: magasincentral-inventaire
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__DefaultConnection: "Host=inventaire-service-db;Port=5432;Username=magasinuser;Password=magasinpass;Database=inventaireMcServiceDb"
+    depends_on:
+      - inventaire-service-db
+    ports:
+      - "5002:80"
 
     # Prometheus pour les métriques
   prometheus:
@@ -140,9 +168,11 @@ services:
 
 volumes:
   db_data:
+  catalogue-db_data:
+  inventaire-db_data:
   grafana_data:
   prometheus_data:
-  catalogue-db_data:
+
 
 
 # {NomService}-service-db:
