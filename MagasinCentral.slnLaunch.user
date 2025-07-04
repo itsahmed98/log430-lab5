@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "CatalogueMcService\\CatalogueMcService.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "InventaireMcService\\InventaireMcService.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "VenteMcService\\VenteMcService.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

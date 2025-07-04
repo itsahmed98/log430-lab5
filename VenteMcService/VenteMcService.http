@@ -1,0 +1,6 @@
+@VenteMcService_HostAddress = http://localhost:5065
+
+GET {{VenteMcService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

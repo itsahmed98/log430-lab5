@@ -5,7 +5,7 @@ using CatalogueMcService.Models;
 namespace CatalogueMcService.Controllers
 {
     [ApiController]
-    [Route("api/v1/[Controller]")]
+    [Route("api/v1/[Controller]/produits")]
     public class CatalogueController : ControllerBase
     {
         private readonly ICatalogueService _catalogueService;
@@ -20,7 +20,7 @@ namespace CatalogueMcService.Controllers
         /// <summary>
         /// Récupère la liste de tous les produits.
         /// </summary>
-        [HttpGet("produits")]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetProduits()
