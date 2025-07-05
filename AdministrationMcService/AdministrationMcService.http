@@ -1,0 +1,6 @@
+@AdministrationMcService_HostAddress = http://localhost:5111
+
+GET {{AdministrationMcService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

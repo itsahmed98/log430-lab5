@@ -33,8 +33,6 @@ namespace VenteMcService.Services
                 ProduitDto? produit;
                 try
                 {
-                    //https://localhost:7104/api/v1/Catalogue/1
-                    var temp = $"{_httpCatalogue.BaseAddress}/{ligneDto.ProduitId}";
                     produit = await _httpCatalogue.GetFromJsonAsync<ProduitDto>($"{_httpCatalogue.BaseAddress}/{ligneDto.ProduitId}");
                     if (produit == null)
                     {
@@ -146,8 +144,7 @@ namespace VenteMcService.Services
             _logger.LogInformation("Mise à jour du stock pour le produit ID {ProduitId} avec la quantité {Quantite}", produitId, quantite);
             try
             {
-                var temp = $"{_httpInventaire.BaseAddress}/Stock?magasinId={magasinId}&produitId={produitId}&quantite={quantite}";
-                var response = await _httpInventaire.PutAsync($"{_httpInventaire.BaseAddress}/Stock?magasinId={magasinId}&produitId={produitId}&quantite={quantite}", null);
+                var response = await _httpInventaire.PutAsync($"{_httpInventaire.BaseAddress}/stocks?magasinId={magasinId}&produitId={produitId}&quantite={quantite}", null);
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogError("Erreur lors de la mise à jour du stock pour le produit ID {ProduitId}.", produitId);

@@ -6,7 +6,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace VenteMcService.Controllers
 {
     [ApiController]
-    [Route("api/v1/vente")]
+    [Route("api/v1/ventes")]
     public class VenteController : ControllerBase
     {
         private readonly IVenteService _venteService;
@@ -33,9 +33,9 @@ namespace VenteMcService.Controllers
         }
 
         /// <summary>
-        /// Recupérer une vente par son identifiant.
+        /// Recupere une vente avec son identifiant
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">L'identifiant de la vente</param>
         /// <returns></returns>
         [HttpGet("{id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -53,7 +53,11 @@ namespace VenteMcService.Controllers
             return Ok(v);
         }
 
-        // GET: api/v1/ventes/magasin/{magasinId}
+        /// <summary>
+        /// Rétourner les ventes associés à un magasin spécifique
+        /// </summary>
+        /// <param name="magasinId">L'identifiant du magasin</param>
+        /// <returns></returns>
         [HttpGet("magasin/{magasinId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetByMagasin(int magasinId)
@@ -64,18 +68,11 @@ namespace VenteMcService.Controllers
             return Ok(list);
         }
 
-        // POST: api/v1/ventes
         /// <summary>
-        /// Créer une vente, avec ses lignes dans le corps JSON.
-        /// Exemple de JSON :
-        /// {
-        ///   "MagasinId": 1,
-        ///   "Date": "2025-06-18T12:00:00Z",
-        ///   "Lignes": [
-        ///     { "ProduitId": 1, "Quantite": 2, "PrixUnitaire": 1.50 },
-        ///     { "ProduitId": 3, "Quantite": 5, "PrixUnitaire": 12.00 }
-        ///   ]
-        /// }
+        /// Créer une nouvelle vente.
+        /// </summary>
+        /// <param name="venteDto">La nouvelle vente à créer</param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -117,9 +114,8 @@ namespace VenteMcService.Controllers
         /// <summary>
         /// Supprimer une vente par son identifiant.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">L'identifiant de la vente à supprimer</param>
         /// <returns></returns>
-        // DELETE: api/v1/ventes/{id}
         [HttpDelete("{id:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
