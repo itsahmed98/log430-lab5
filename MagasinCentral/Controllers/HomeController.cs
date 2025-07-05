@@ -4,9 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MagasinCentral.Controllers
 {
-    /// <summary>
-    /// HomeController handles requests for the home page and privacy policy.
-    /// </summary>
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

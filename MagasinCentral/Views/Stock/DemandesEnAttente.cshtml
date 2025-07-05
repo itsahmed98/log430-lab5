@@ -1,0 +1,28 @@
+﻿@model List<DemandeReapprovisionnementDto>
+<h2>Demandes en attente</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Magasin</th>
+            <th>Produit</th>
+            <th>Quantité</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var d in Model)
+        {
+            <tr>
+                <td>@d.MagasinId</td>
+                <td>@d.ProduitId</td>
+                <td>@d.QuantiteDemandee</td>
+                <td>
+                    <form asp-action="ValiderDemande" method="post">
+                        <input type="hidden" name="demandeId" value="@d.DemandeId" />
+                        <button type="submit" class="btn btn-sm btn-success">Valider</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,5 +1,4 @@
-using MagasinCentral.Services;
-using MagasinCentral.ViewModels;
+using MagasinCentral.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagasinCentral.Controllers
@@ -9,11 +8,13 @@ namespace MagasinCentral.Controllers
     /// </summary>
     public class PerformancesController : Controller
     {
-        private readonly IPerformancesService _performancesService;
+        private readonly HttpClient _httpClient;
+        private readonly ILogger<PerformancesController> _logger;
 
-        public PerformancesController(IPerformancesService performancesService)
+        public PerformancesController(ILogger<PerformancesController> logger, IHttpClientFactory httpClientFactory)
         {
-            _performancesService = performancesService ?? throw new ArgumentNullException(nameof(performancesService));
+            _httpClient = httpClientFactory?.CreateClient("PerformancesMcService") ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -21,8 +22,30 @@ namespace MagasinCentral.Controllers
         /// </summary>
         public async Task<IActionResult> Index()
         {
-            var model = await _performancesService.GetPerformances();
-            return View(model);
+            IActionResult? result = null;
+
+            _logger.LogInformation("Tentative de récupération des performances...");
+
+            try
+            {
+                var performances = await _httpClient.GetFromJsonAsync<List<PerformanceDto>>("");
+
+                if (performances == null || !performances.Any())
+                {
+                    _logger.LogError("Échec de la récupération des performances");
+                    result = View("Error");
+                }
+
+                _logger.LogInformation("Performaces ont été récupérées avec succès.");
+                result = View(performances);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Une erreur s'est produite lors de la récupération des performances.");
+                result = View("Error");
+            }
+
+            return result;
         }
     }
 }

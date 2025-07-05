@@ -1,0 +1,38 @@
+﻿@model StockParMagasinViewModel
+
+<h1 class="mt-4">Stock Central par magasin</h1>
+
+@foreach (var magasin in Model.Magasins)
+{
+    <h2>@magasin.NomMagasin</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Quantité locale</th>
+                @if (magasin.MagasinId != 0)
+                {
+                    <th>Action</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var produit in magasin.Produits)
+            {
+                <tr>
+                    <td>@produit.NomProduit</td>
+                    <td>@produit.QuantiteDisponible</td>
+                    @if (magasin.MagasinId != 0)
+                    {
+                        <td>
+                            <a asp-action="NouvelleDemande"
+                               asp-route-magasinId="@produit.MagasinId"
+                               asp-route-produitId="@produit.ProduitId"
+                               class="btn btn-sm btn-primary">Demander</a>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}

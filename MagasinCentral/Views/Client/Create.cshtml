@@ -1,0 +1,26 @@
+﻿@model MagasinCentral.Models.ClientDto
+@{
+    ViewData["Title"] = "Créer un client";
+}
+
+<h2>Créer un client</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Nom"></label>
+        <input asp-for="Nom" class="form-control" />
+        <span asp-validation-for="Nom" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Courriel"></label>
+        <input asp-for="Courriel" class="form-control" />
+        <span asp-validation-for="Courriel" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Adresse"></label>
+        <input asp-for="Adresse" class="form-control" />
+        <span asp-validation-for="Adresse" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Créer</button>
+    <a asp-action="Index" class="btn btn-secondary">Retour</a>
+</form>

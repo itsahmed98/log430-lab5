@@ -1,30 +1,33 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MagasinCentral.Models
+﻿namespace MagasinCentral.Models
 {
+    /// <summary>
+    /// Un data transfer object (DTO) représentant un produit dans le système pour passer au view.
+    /// </summary>
     public class ProduitDto
     {
         /// <summary>
-        /// Nom du produit.
+        /// l'identifiant unique du produit.
         /// </summary>
-        [MaxLength(100)]
+        public int ProduitId { get; set; }
+
+        /// <summary>
+        /// Le nom du produit.
+        /// </summary>
         public string Nom { get; set; } = string.Empty;
 
         /// <summary>
-        /// Catégorie du produit.
+        /// La catégorie du produit.
         /// </summary>
-        [MaxLength(50)]
         public string? Categorie { get; set; }
 
         /// <summary>
-        /// Prix unitaire actuel.
+        /// Le prix du produit.
         /// </summary>
         public decimal Prix { get; set; }
 
         /// <summary>
-        /// Description du produit.
+        /// La description du produit.
         /// </summary>
-        [MaxLength(500)]
         public string? Description { get; set; }
     }
 }

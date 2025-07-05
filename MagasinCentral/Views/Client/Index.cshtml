@@ -1,0 +1,34 @@
+﻿@model List<ClientDto>
+@{
+    ViewData["Title"] = "Liste des clients";
+}
+
+<h2>Clients enregistrés</h2>
+<a class="btn btn-primary mb-3" asp-action="Create">Créer un nouveau client</a>
+
+@if (!Model.Any())
+{
+    <p>Aucun client enregistré pour le moment.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Courriel</th>
+                <th>Adresse</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var client in Model)
+            {
+                <tr>
+                    <td>@client.Nom</td>
+                    <td>@client.Courriel</td>
+                    <td>@client.Adresse</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

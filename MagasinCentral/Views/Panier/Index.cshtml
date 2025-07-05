@@ -1,0 +1,73 @@
+﻿@model PanierDto
+@{
+    ViewData["Title"] = "Votre panier";
+}
+
+<h2>Panier du client #@Model.ClientId</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (!Model.Lignes.Any())
+{
+    <p>Le panier est vide.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ligne in Model.Lignes)
+            {
+                <tr>
+                    <td>@ligne.ProduitId</td>
+                    <td>@ligne.Quantite</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <form asp-controller="Commande" asp-action="ValiderCommande" method="post">
+        <input type="hidden" name="clientId" value="@Model.ClientId" />
+        <button type="submit" class="btn btn-primary">Valider la commande</button>
+    </form>
+
+    <form asp-action="Vider" method="post" class="mt-2">
+        <input type="hidden" name="clientId" value="@Model.ClientId" />
+        <button type="submit" class="btn btn-danger">Vider le panier</button>
+    </form>
+
+    <h3 class="mt-4">Ajouter un produit au panier</h3>
+    <form asp-action="Ajouter" method="post">
+        <input type="hidden" name="clientId" value="@Model.ClientId" />
+
+        <div class="form-group">
+            <label for="produitId">Produit :</label>
+            <select name="produitId" class="form-control" required>
+                @foreach (var produit in (List<ProduitDto>)ViewBag.Produits)
+                {
+                    <option value="@produit.ProduitId">@produit.Nom (@produit.Prix €)</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="quantite">Quantité :</label>
+            <input name="quantite" class="form-control" type="number" min="1" required />
+        </div>
+
+        <button type="submit" class="btn btn-success mt-2">Ajouter au panier</button>
+    </form>
+
+}

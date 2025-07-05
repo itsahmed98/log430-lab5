@@ -26,60 +26,89 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home"
-                                asp-action="Privacy">Privacy</a>
+                               asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item"></li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Rapport" asp-action="Index">Rapport
-                            consolidé</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Rapport" asp-action="Index">
+                            Rapport
+                            consolidé
+                        </a>
                         </li>
                         <li class="nav-item"></li>
                         <a class="nav-link text-dark" asp-area="" asp-controller="Performances"
-                            asp-action="Index">Performances</a>
+                           asp-action="Index">Performances</a>
                         </li>
 
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="ventesDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
+                               data-bs-toggle="dropdown" aria-expanded="false">
                                 Ventes
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="ventesDropdown">
-                                <li><a class="dropdown-item" asp-controller="Vente" asp-action="Liste">Liste des
-                                        ventes</a>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Vente" asp-action="Liste">
+                                        Liste des
+                                        ventes
+                                    </a>
                                 </li>
-                                <li><a class="dropdown-item" asp-controller="Vente" asp-action="Enregistrer">Faire une
-                                        vente</a>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Vente" asp-action="Enregistrer">
+                                        Faire une
+                                        vente
+                                    </a>
                                 </li>
                             </ul>
                         </li>
 
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="produitsDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
+                               data-bs-toggle="dropdown" aria-expanded="false">
                                 Produits
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="produitsDropdown">
-                                <li><a class="dropdown-item" asp-controller="Produit" asp-action="Index">voir
-                                        Produits</a>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Produit" asp-action="Index">
+                                        voir
+                                        Produits
+                                    </a>
                                 </li>
-                                <li><a class="dropdown-item" asp-controller="Produit" asp-action="Recherche">Chercher
-                                        une produit..</a>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Produit" asp-action="Recherche">
+                                        Chercher
+                                        une produit..
+                                    </a>
                                 </li>
                             </ul>
                         </li>
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="reapprovisionnementDropdown"
-                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Réapprovisionnement
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="stockDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Stock
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="reapprovisionnementDropdown">
-                                <li><a class="dropdown-item" asp-controller="Reapprovisionnement"
-                                        asp-action="Index">Faire une demande</a></li>
-                                <li><a class="dropdown-item" asp-controller="Reapprovisionnement"
-                                        asp-action="DemandesReapprovisionnement">Demandes cours</a></li>
-                                <li><a class="dropdown-item" asp-controller="TraiterDemandes" asp-action="Index">Valider
-                                        Demandes cours</a></li>
+                            <ul class="dropdown-menu" aria-labelledby="stockDropdown">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Stock" asp-action="StockCentral">Stock central</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Stock" asp-action="DemandesEnAttente">Demandes en attente</a>
+                                </li>
                             </ul>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Client" asp-action="Index">Clients</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Panier" asp-action="Index" asp-route-clientId="1">Panier client #1</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <form asp-controller="Commande" asp-action="ValiderCommande" method="post" class="d-inline">
+                                <input type="hidden" name="clientId" value="1" />
+                                <button type="submit" class="btn nav-link text-dark border-0 bg-transparent">Valider commande</button>
+                            </form>
                         </li>
                     </ul>
                 </div>

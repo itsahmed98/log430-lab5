@@ -1,4 +1,4 @@
-@model List<Produit>
+@model List<ProduitDto>
 @{
     ViewData["Title"] = "Recherche de produits";
     var terme = (string)(ViewData["Terme"] ?? "");
@@ -6,7 +6,7 @@
 <h1>Recherche de produits</h1>
 <form method="get" asp-action="Recherche">
     <div class="input-group mb-3">
-        <input type="text" name="produit" value="@terme" class="form-control" placeholder="ID, nom ou catégorie…" />
+        <input type="text" name="term" value="@terme" class="form-control" placeholder="ID, nom ou catégorie…" />
         <div class="input-group-append">
             <button class="btn btn-primary">Rechercher</button>
         </div>
@@ -25,6 +25,7 @@ else
                 <th>Nom</th>
                 <th>Catégorie</th>
                 <th>Prix</th>
+                <th>Description</th>
             </tr>
         </thead>
         <tbody>
@@ -35,6 +36,7 @@ else
                     <td>@p.Nom</td>
                     <td>@p.Categorie</td>
                     <td>@p.Prix.ToString("C")</td>
+                    <td>@p.Description</td>
                 </tr>
             }
         </tbody>
