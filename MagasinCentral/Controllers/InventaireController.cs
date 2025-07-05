@@ -8,26 +8,27 @@ namespace MagasinCentral.Controllers
     /// <summary>
     /// Controller pour gérer les opérations liées au stock central et aux demandes de réapprovisionnement.
     /// </summary>
-    public class StockController : Controller
+    public class InventaireController : Controller
     {
-        private readonly ILogger<StockController> _logger;
-        private readonly HttpClient _httpStock;
-        private readonly HttpClient _httpMagasin;
-        private readonly HttpClient _httpProduit;
+        private readonly ILogger<InventaireController> _logger;
+        private readonly HttpClient _httpInventaire;
+        private readonly HttpClient _httpAdmin;
+        private readonly HttpClient _httpCatalogue;
 
-        public StockController(ILogger<StockController> logger, IHttpClientFactory httpStock, IHttpClientFactory httpMagasin, IHttpClientFactory httpProduit)
+        public InventaireController(ILogger<InventaireController> logger, IHttpClientFactory client)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _httpStock = httpStock.CreateClient("StockMcService") ?? throw new ArgumentNullException(nameof(httpStock));
-            _httpMagasin = httpMagasin.CreateClient("MagasinMcService") ?? throw new ArgumentNullException(nameof(httpMagasin));
-            _httpProduit = httpProduit.CreateClient("ProduitMcService") ?? throw new ArgumentNullException(nameof(httpProduit));
+            _httpInventaire = client.CreateClient("InventaireMcService") ?? throw new ArgumentNullException(nameof(client));
+            _httpAdmin = client.CreateClient("AdministrationMcService") ?? throw new ArgumentNullException(nameof(client));
+            _httpCatalogue = client.CreateClient("CatalogueMcService") ?? throw new ArgumentNullException(nameof(client));
         }
 
         public async Task<IActionResult> StockCentral()
         {
-            var magasins = await _httpMagasin.GetFromJsonAsync<List<MagasinDto>>("");
-            var stockCentral = await _httpStock.GetFromJsonAsync<List<StockDto>>($"{_httpStock.BaseAddress}api/v1/stocks/stockcentral");
-            var produits = await _httpProduit.GetFromJsonAsync<List<ProduitDto>>("");
+            var magasins = await _httpAdmin.GetFromJsonAsync<List<MagasinDto>>($"{_httpAdmin.BaseAddress}/magasins");
+            var temp = $"{_httpInventaire.BaseAddress}/stockcentral";
+            var stockCentral = await _httpInventaire.GetFromJsonAsync<List<StockDto>>($"{_httpInventaire.BaseAddress}/stocks/stockcentral");
+            var produits = await _httpCatalogue.GetFromJsonAsync<List<ProduitDto>>("");
 
             foreach (var stock in stockCentral)
             {
@@ -55,7 +56,7 @@ namespace MagasinCentral.Controllers
 
             foreach (var magasin in magasins)
             {
-                var stockLocal = await _httpStock.GetFromJsonAsync<List<StockDto>>($"{_httpStock.BaseAddress}api/v1/stocks/stockmagasin/{magasin.MagasinId}");
+                var stockLocal = await _httpInventaire.GetFromJsonAsync<List<StockDto>>($"{_httpInventaire.BaseAddress}/stocks/stockmagasin/{magasin.MagasinId}");
 
                 var produitsParMagasin = stockCentral.Select(central =>
                 {
@@ -97,7 +98,7 @@ namespace MagasinCentral.Controllers
                 ProduitId = produitId,
                 QuantiteDemandee = quantite
             };
-            var response = await _httpStock.PostAsJsonAsync($"{_httpStock.BaseAddress}api/v1/reapprovisionnement", payload);
+            var response = await _httpInventaire.PostAsJsonAsync($"{_httpInventaire.BaseAddress}/reapprovisionnement", payload);
 
             if (response.IsSuccessStatusCode)
             {
@@ -114,7 +115,7 @@ namespace MagasinCentral.Controllers
 
         public async Task<IActionResult> DemandesEnAttente()
         {
-            var demandes = await _httpStock.GetFromJsonAsync<List<DemandeReapprovisionnementDto>>($"{_httpStock.BaseAddress}api/v1/reapprovisionnement/en-attente");
+            var demandes = await _httpInventaire.GetFromJsonAsync<List<DemandeReapprovisionnementDto>>($"{_httpInventaire.BaseAddress}/reapprovisionnement/en-attente");
             return View(demandes);
         }
 
@@ -122,7 +123,9 @@ namespace MagasinCentral.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ValiderDemande(int demandeId)
         {
-            var response = await _httpStock.PostAsync($"{_httpStock.BaseAddress}api/v1/reapprovisionnement/{demandeId}/valider", null);
+            // https://localhost:7221/api/v1/inventaire/reapprovisionnement/2/valider
+            var temp = $"{_httpInventaire.BaseAddress}/reapprovisionnement/{demandeId}/valider";
+            var response = await _httpInventaire.PutAsync($"{_httpInventaire.BaseAddress}/reapprovisionnement/{demandeId}/valider", null);
 
             if (response.IsSuccessStatusCode)
                 TempData["Succès"] = "Demande validée avec succès.";

@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace AdministrationMcService.Migrations
 {
-    [DbContext(typeof(PerformanceDbContext))]
+    [DbContext(typeof(AdminDbContext))]
     [Migration("20250704231640_InitialCreate")]
     partial class InitialCreate
     {

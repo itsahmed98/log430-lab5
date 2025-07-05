@@ -8,10 +8,10 @@ namespace AdministrationMcService.Services
 {
     public class PerformanceService : IPerformanceService
     {
-        private readonly PerformanceDbContext _context;
+        private readonly AdminDbContext _context;
         private readonly ILogger<PerformanceService> _logger;
 
-        public PerformanceService(ILogger<PerformanceService> logger, PerformanceDbContext context)
+        public PerformanceService(ILogger<PerformanceService> logger, AdminDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

@@ -8,15 +8,15 @@ namespace MagasinCentral.Controllers
     /// <summary>
     /// Contrôleur pour les performances du tableau de bord (UC3).
     /// </summary>
-    public class ProduitController : Controller
+    public class CatalogueController : Controller
     {
-        private readonly ILogger<ProduitController> _logger;
+        private readonly ILogger<CatalogueController> _logger;
         private readonly HttpClient _httpClient;
 
-        public ProduitController(ILogger<ProduitController> logger, IHttpClientFactory httpClientFactory)
+        public CatalogueController(ILogger<CatalogueController> logger, IHttpClientFactory httpClientFactory)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _httpClient = httpClientFactory?.CreateClient("ProduitMcService") ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _httpClient = httpClientFactory?.CreateClient("CatalogueMcService") ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
         /// <summary>

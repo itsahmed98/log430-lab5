@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AdministrationMcService.Controllers
 {
     [ApiController]
-    [Route("api/v1/performances")]
+    [Route("api/v1/administration/performances")]
     public class PerformanceController : ControllerBase
     {
         private readonly IPerformanceService _performanceService;

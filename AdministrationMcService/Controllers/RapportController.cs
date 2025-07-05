@@ -8,7 +8,7 @@ namespace AdministrationMcService.Controllers
     /// Un contrôleur pour gérer les rapports consolidés des ventes.
     /// </summary>
     [ApiController]
-    [Route("api/v1/rapports")]
+    [Route("api/v1/administration/rapports")]
     public class RapportController : ControllerBase
     {
         private readonly IRapportService _rapportService;

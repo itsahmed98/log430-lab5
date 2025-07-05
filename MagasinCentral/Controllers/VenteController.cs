@@ -12,25 +12,21 @@ namespace MagasinCentral.Controllers;
 public class VenteController : Controller
 {
     private readonly ILogger<VenteController> _logger;
-    private readonly HttpClient _httpClientVente;
-    private readonly HttpClient _httpClientProduit;
-    private readonly HttpClient _httpClientMagasin;
+    private readonly HttpClient _httpVente;
+    private readonly HttpClient _httpCatalogue;
+    private readonly HttpClient _httpAdmin;
 
 
     /// <summary>
     /// Constructeur pour initialiser les services nécessaires à la gestion des ventes.
     /// </summary>
-    /// <param name="venteService"></param>
-    /// <param name="produitService"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public VenteController(ILogger<VenteController> logger, 
-        IHttpClientFactory httpClientFactoryVente,
-        IHttpClientFactory httpClientFactoryProduit)
+    public VenteController(ILogger<VenteController> logger, IHttpClientFactory client)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _httpClientVente = httpClientFactoryVente?.CreateClient("VenteMcService") ?? throw new ArgumentNullException(nameof(httpClientFactoryVente));
-        _httpClientProduit = httpClientFactoryProduit?.CreateClient("ProduitMcService") ?? throw new ArgumentNullException(nameof(httpClientFactoryProduit));
-        _httpClientMagasin = httpClientFactoryVente?.CreateClient("MagasinMcService") ?? throw new ArgumentNullException(nameof(httpClientFactoryVente));
+        _httpVente = client.CreateClient("VenteMcService") ?? throw new ArgumentNullException(nameof(client));
+        _httpCatalogue = client.CreateClient("CatalogueMcService") ?? throw new ArgumentNullException(nameof(client));
+        _httpAdmin = client.CreateClient("AdministrationMcService") ?? throw new ArgumentNullException(nameof(client));
     }
 
     /// <summary>
@@ -39,8 +35,8 @@ public class VenteController : Controller
     /// <param name="magasinId"></param>
     public async Task<IActionResult> Enregistrer()
     {
-        var magasins = await _httpClientMagasin.GetFromJsonAsync<List<MagasinDto>>("");
-        var produits = await _httpClientProduit.GetFromJsonAsync<List<ProduitDto>>("");
+        var magasins = await _httpAdmin.GetFromJsonAsync<List<MagasinDto>>($"{_httpAdmin.BaseAddress}/magasins");
+        var produits = await _httpCatalogue.GetFromJsonAsync<List<ProduitDto>>("");
 
         ViewBag.Magasins = new SelectList(magasins, "MagasinId", "Nom");
         ViewBag.Produits = new SelectList(produits, "ProduitId", "Nom");
@@ -62,8 +58,8 @@ public class VenteController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Enregistrer(VenteCreateViewModel vm, string? action)
     {
-        var magasins = await _httpClientMagasin.GetFromJsonAsync<List<MagasinDto>>("");
-        var produits = await _httpClientProduit.GetFromJsonAsync<List<ProduitDto>>("");
+        var magasins = await _httpAdmin.GetFromJsonAsync<List<MagasinDto>>($"{_httpAdmin.BaseAddress}/magasins");
+        var produits = await _httpCatalogue.GetFromJsonAsync<List<ProduitDto>>("");
 
         ViewBag.Magasins = new SelectList(magasins, "MagasinId", "Nom");
         ViewBag.Produits = new SelectList(produits, "ProduitId", "Nom");
@@ -80,7 +76,7 @@ public class VenteController : Controller
         var payload = new
         {
             MagasinId = vm.MagasinId,
-            ClientId = 0,
+            ClientId = (int?)null,
             IsEnLigne = false,
             Date = DateTime.UtcNow,
             Lignes = vm.Lignes
@@ -89,7 +85,7 @@ public class VenteController : Controller
                 .ToList()
         };
 
-        var response = await _httpClientVente.PostAsJsonAsync("", payload);
+        var response = await _httpVente.PostAsJsonAsync("", payload);
 
         if (response.IsSuccessStatusCode)
         {
@@ -112,7 +108,7 @@ public class VenteController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Retour(int venteId)
     {
-        var response = await _httpClientVente.DeleteAsync($"{_httpClientVente.BaseAddress}/{venteId}");
+        var response = await _httpVente.DeleteAsync($"{_httpVente.BaseAddress}/{venteId}");
 
         if (response.IsSuccessStatusCode)
         {
@@ -136,22 +132,27 @@ public class VenteController : Controller
         try
         {
             _logger.LogInformation("Récupération des ventes...");
-            var ventes = await _httpClientVente.GetFromJsonAsync<List<VenteDto>>("");
+            var ventes = await _httpVente.GetFromJsonAsync<List<VenteDto>>("");
 
             if (ventes == null || !ventes.Any())
                 return View(ventesAffichage);
 
+            var ventesPhysiques = ventes
+                .Where(v => v.MagasinId != null)
+                .ToList();
+
             foreach (var vente in ventes)
             {
                 // Récupérer le nom du magasin
-                var magasin = await _httpClientMagasin.GetFromJsonAsync<MagasinDto>($"{_httpClientMagasin.BaseAddress}/{vente.MagasinId}");
+                int magasinId = vente.MagasinId ?? 1;
+                var magasin = await _httpAdmin.GetFromJsonAsync<MagasinDto>($"{_httpAdmin.BaseAddress}/magasins/{vente.MagasinId ?? 1}");
 
                 var lignes = new List<LigneDetailViewModel>();
 
                 foreach (var ligne in vente.Lignes)
                 {
                     // Récupérer le nom du produit
-                    var produit = await _httpClientProduit.GetFromJsonAsync<ProduitDto>($"{_httpClientProduit.BaseAddress}/{ligne.ProduitId}");
+                    var produit = await _httpCatalogue.GetFromJsonAsync<ProduitDto>($"{_httpCatalogue.BaseAddress}/{ligne.ProduitId}");
 
                     lignes.Add(new LigneDetailViewModel
                     {

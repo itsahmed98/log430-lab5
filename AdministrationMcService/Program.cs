@@ -8,11 +8,12 @@ var config = builder.Configuration;
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<PerformanceDbContext>(options =>
+builder.Services.AddDbContext<AdminDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<IPerformanceService, PerformanceService>();
 builder.Services.AddScoped<IRapportService, RapportService>();
+builder.Services.AddScoped<IMagasinService, MagasinService>();
 
 builder.Services.AddCors(options =>
 {

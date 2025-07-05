@@ -6,7 +6,7 @@
 
 <h1 class="mt-4">Modifier le produit</h1>
 
-<form asp-controller="Produit" asp-action="Modifier" method="post">
+<form asp-controller="Catalogue" asp-action="Modifier" method="post">
     @Html.AntiForgeryToken()
     @* Champ caché pour l’ID du produit *@
     <input type="hidden" asp-for="ProduitId" />
@@ -37,7 +37,7 @@
 
     <div class="form-group mt-3">
         <button type="submit" class="btn btn-success">Enregistrer les modifications</button>
-        <a asp-controller="Produit" asp-action="Index" class="btn btn-secondary ml-2">Annuler</a>
+        <a asp-controller="Catalogue" asp-action="Index" class="btn btn-secondary ml-2">Annuler</a>
     </div>
 </form>
 

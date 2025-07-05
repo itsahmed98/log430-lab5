@@ -8,7 +8,7 @@ namespace InventaireMcService.Controllers
     /// Contrôleur pour gérer les demandes de réapprovisionnement des produits dans les magasins.
     /// </summary>
     [ApiController]
-    [Route("api/v1/inventaire/[Controller]")]
+    [Route("api/v1/inventaire/reapprovisionnement")]
     public class ReapprovisionnementController : ControllerBase
     {
         private readonly IReapprovisionnementService _service;

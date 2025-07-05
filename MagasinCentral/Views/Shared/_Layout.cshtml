@@ -71,19 +71,19 @@
                         </li>
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="produitsDropdown" role="button"
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="catalogueDropdown" role="button"
                                data-bs-toggle="dropdown" aria-expanded="false">
                                 Catalogue
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="produitsDropdown">
+                            <ul class="dropdown-menu" aria-labelledby="catalogueDropdown">
                                 <li>
-                                    <a class="dropdown-item" asp-controller="Produit" asp-action="Index">
+                                    <a class="dropdown-item" asp-controller="Catalogue" asp-action="Index">
                                         voir
                                         Produits
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" asp-controller="Produit" asp-action="Recherche">
+                                    <a class="dropdown-item" asp-controller="Catalogue" asp-action="Recherche">
                                         Chercher
                                         une produit..
                                     </a>
@@ -94,14 +94,14 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="inventaireDropdown" role="button"
                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Stock
+                                Inventaire
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="inventaireDropdown">
                                 <li>
-                                    <a class="dropdown-item" asp-controller="Stock" asp-action="StockCentral">Stock central</a>
+                                    <a class="dropdown-item" asp-controller="Inventaire" asp-action="StockCentral">Stock central</a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" asp-controller="Stock" asp-action="DemandesEnAttente">Demandes en attente</a>
+                                    <a class="dropdown-item" asp-controller="Inventaire" asp-action="DemandesEnAttente">Demandes en attente</a>
                                 </li>
                             </ul>
                         </li>
