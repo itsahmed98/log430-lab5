@@ -86,17 +86,17 @@ namespace MagasinCentral.Controllers
         /// Vide le panier d’un client.
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> ViderPanier(int clientId)
+        public async Task<IActionResult> ViderPanier(int panierId)
         {
-            _logger.LogInformation("Requête DELETE /Panier : tentative de vider le panier du client ID {ClientId}.", clientId);
+            _logger.LogInformation("Requête DELETE /Panier : tentative de vider le panier du client ID {panierId}.", panierId);
 
             try
             {
-                var response = await _httpEcommerce.DeleteAsync($"{_httpEcommerce.BaseAddress}/{clientId}/vider");
+                var response = await _httpEcommerce.DeleteAsync($"{_httpEcommerce.BaseAddress}/panier/{panierId}/vider");
 
                 if (response.IsSuccessStatusCode)
                 {
-                    _logger.LogInformation("Panier vidé avec succès pour le client ID {ClientId}.", clientId);
+                    _logger.LogInformation("Panier vidé avec succès pour le client ID {panierId}.", panierId);
                     TempData["Message"] = "Panier vidé.";
                 }
                 else
@@ -108,11 +108,11 @@ namespace MagasinCentral.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur lors du vidage du panier pour le client ID {ClientId}.", clientId);
+                _logger.LogError(ex, "Erreur lors du vidage du panier pour le client ID {ClienpanierIdtId}.", panierId);
                 TempData["Error"] = "Erreur interne lors du vidage du panier.";
             }
 
-            return RedirectToAction("Index", new { clientId });
+            return RedirectToAction("PanierClient", new { clientId = 2 });
         }
 
         /// <summary>
@@ -188,57 +188,35 @@ namespace MagasinCentral.Controllers
         /// Valide une commande à partir du panier du client.
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> ValiderCommande(int clientId)
+        public async Task<IActionResult> ValiderCommande(int panierId)
         {
-            _logger.LogInformation("Début de la validation de la commande pour le client ID {ClientId}.", clientId);
+            _logger.LogInformation("Début de la validation du panier {panierId}.", panierId);
 
             try
             {
-                // Récupération du panier
-                var panier = await _httpEcommerce.GetFromJsonAsync<PanierDto>($"{_httpEcommerce.BaseAddress}/panier/{clientId}");
-
-                if (panier == null || panier.Lignes == null || !panier.Lignes.Any())
-                {
-                    _logger.LogWarning("Le panier du client ID {ClientId} est vide ou introuvable.", clientId);
-                    TempData["Error"] = "Le panier est vide ou introuvable.";
-                    return RedirectToAction("Index", "Panier", new { clientId });
-                }
-
-                // Préparer la commande
-                var dto = new CommandeValidationDto
-                {
-                    ClientId = clientId,
-                    Lignes = panier.Lignes
-                        .Select(p => new LigneCommandeDto
-                        {
-                            ProduitId = p.ProduitId,
-                            Quantite = p.Quantite
-                        }).ToList()
-                };
-
                 // Envoyer la commande
-                var response = await _httpEcommerce.PostAsJsonAsync($"", dto);
+                var response = await _httpEcommerce.PostAsJsonAsync($"{_httpEcommerce.BaseAddress}/panier/{panierId}/valider", "");
 
                 if (response.IsSuccessStatusCode)
                 {
-                    _logger.LogInformation("Commande validée avec succès pour le client ID {ClientId}.", clientId);
+                    _logger.LogInformation("Commande validée avec succès pour le panier {panierId}.", panierId);
                     TempData["Message"] = "Commande validée avec succès.";
                 }
                 else
                 {
                     var erreur = await response.Content.ReadAsStringAsync();
-                    _logger.LogWarning("Échec de la validation de commande pour le client ID {ClientId}. Code: {Code}, Détails: {Erreur}",
-                        clientId, response.StatusCode, erreur);
+                    _logger.LogWarning("Échec de la validation de commande pour le panier {panierId}. Code: {Code}, Détails: {Erreur}",
+                        panierId, response.StatusCode, erreur);
                     TempData["Error"] = "Erreur lors de la validation de la commande.";
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur inattendue lors de la validation de la commande pour le client ID {ClientId}.", clientId);
+                _logger.LogError(ex, "Erreur inattendue lors de la validation du panier {panierId}.", panierId);
                 TempData["Error"] = "Erreur interne lors de la validation de la commande.";
             }
 
-            return RedirectToAction("Index", "Panier", new { clientId });
+            return RedirectToAction(nameof(PanierClient), new { clientId = 2 });
         }
     }
 }
