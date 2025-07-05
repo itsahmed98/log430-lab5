@@ -22,12 +22,12 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         @*<li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home"
-                               asp-action="Privacy">Privacy</a>
-                        </li>*@
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Home"
+               asp-action="Privacy">Privacy</a>
+        </li>*@
 
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="administrationDropdown" role="button"
@@ -106,19 +106,19 @@
                             </ul>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Client" asp-action="Index">Clients</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Panier" asp-action="Index" asp-route-clientId="1">Panier client #1</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <form asp-controller="Commande" asp-action="ValiderCommande" method="post" class="d-inline">
-                                <input type="hidden" name="clientId" value="1" />
-                                <button type="submit" class="btn nav-link text-dark border-0 bg-transparent">Valider commande</button>
-                            </form>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="ecommerceDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                ECommerce
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="ecommerceDropdown">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="ECommerce" asp-action="Clients">Clients</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="ECommerce" asp-action="PanierClient" asp-route-clientId="2">Panier client #2</a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </div>

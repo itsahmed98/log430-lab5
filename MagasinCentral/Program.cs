@@ -24,6 +24,11 @@ builder.Services.AddHttpClient("AdministrationMcService", client =>
     client.BaseAddress = new Uri(config["Services:Administration"]);
 });
 
+builder.Services.AddHttpClient("ECommerceMcService", client =>
+{
+    client.BaseAddress = new Uri(config["Services:ECommerce"]);
+});
+
 
 builder.Services.AddControllersWithViews();
 

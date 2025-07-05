@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerceMcService.Controllers
 {
     [ApiController]
-    [Route("api/v1/clients")]
+    [Route("api/v1/ecommerce/clients")]
     public class ClientController : ControllerBase
     {
         private readonly ILogger<ClientController> _logger;

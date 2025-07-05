@@ -38,18 +38,18 @@ else
         </tbody>
     </table>
 
-    <form asp-controller="Commande" asp-action="ValiderCommande" method="post">
+    <form asp-controller="ECommerce" asp-action="ValiderCommande" method="post">
         <input type="hidden" name="clientId" value="@Model.ClientId" />
         <button type="submit" class="btn btn-primary">Valider la commande</button>
     </form>
 
-    <form asp-action="Vider" method="post" class="mt-2">
+    <form asp-action="ViderPanier" method="post" class="mt-2">
         <input type="hidden" name="clientId" value="@Model.ClientId" />
         <button type="submit" class="btn btn-danger">Vider le panier</button>
     </form>
 
     <h3 class="mt-4">Ajouter un produit au panier</h3>
-    <form asp-action="Ajouter" method="post">
+    <form asp-action="AjouterProduit" method="post">
         <input type="hidden" name="clientId" value="@Model.ClientId" />
 
         <div class="form-group">

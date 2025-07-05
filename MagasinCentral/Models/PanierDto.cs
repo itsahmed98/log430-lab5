@@ -8,6 +8,11 @@
         /// <summary>
         /// L'identifiant unique du panier.
         /// </summary>
+        public int PanierId { get; set; }
+
+        /// <summary>
+        /// L'identifiant unique du panier.
+        /// </summary>
         public int ClientId { get; set; }
 
         /// <summary>

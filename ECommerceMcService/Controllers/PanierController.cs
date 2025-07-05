@@ -8,7 +8,7 @@ namespace ECommerceMcService.Controllers
     /// Contrôleur pour gérer les opérations liées aux paniers des clients.
     /// </summary>
     [ApiController]
-    [Route("api/v1/panier")]
+    [Route("api/v1/ecommerce/panier")]
     public class PanierController : ControllerBase
     {
         private readonly IPanierService _service;
