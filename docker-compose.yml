@@ -147,6 +147,34 @@ services:
     ports:
       - "5003:80"
 
+  administration-service-db:
+    image: postgres:15 
+    container_name: administration-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: administrationMcServiceDb
+    volumes:
+      - administration-db_data:/var/lib/postgresql/data
+    ports:
+      - "5436:5432"
+
+  administration-api:
+    build:
+      context: ./administrationMcService
+      dockerfile: Dockerfile
+    image: administration-mc-service:latest
+    container_name: magasincentral-administration
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__DefaultConnection: "Host=administration-service-db;Port=5432;Username=magasinuser;Password=magasinpass;Database=administrationMcServiceDb"
+    depends_on:
+      - administration-service-db
+    ports:
+      - "5004:80"
+
     # Prometheus pour les métriques
   prometheus:
     image: prom/prometheus:latest
@@ -201,6 +229,7 @@ volumes:
   catalogue-db_data:
   inventaire-db_data:
   vente-db_data:
+  administration-db_data:
   grafana_data:
   prometheus_data:
 
