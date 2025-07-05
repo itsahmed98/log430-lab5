@@ -21,22 +21,32 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
+                        @*<li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home"
                                asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item"></li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Rapport" asp-action="Index">
-                            Rapport
-                            consolidé
-                        </a>
-                        </li>
-                        <li class="nav-item"></li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Performances"
-                           asp-action="Index">Performances</a>
+                        </li>*@
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="administrationDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Administration
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="administrationDropdown">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Administration" asp-action="Rapport">
+                                        Rapport
+                                        consolidé
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Administration" asp-action="Performance">
+                                        Performances
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
 
                         <li class="nav-item dropdown">
@@ -63,7 +73,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="produitsDropdown" role="button"
                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Produits
+                                Catalogue
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="produitsDropdown">
                                 <li>
@@ -82,11 +92,11 @@
                         </li>
 
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="stockDropdown" role="button"
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="inventaireDropdown" role="button"
                                data-bs-toggle="dropdown" aria-expanded="false">
                                 Stock
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="stockDropdown">
+                            <ul class="dropdown-menu" aria-labelledby="inventaireDropdown">
                                 <li>
                                     <a class="dropdown-item" asp-controller="Stock" asp-action="StockCentral">Stock central</a>
                                 </li>
