@@ -21,6 +21,10 @@
       {
         "Path": "MagasinCentral\\MagasinCentral.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "ECommerceMcService\\ECommerceMcService.csproj",
+        "Action": "Start"
       }
     ]
   }

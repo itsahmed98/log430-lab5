@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VenteMcService.Test", "Vent
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdministrationMcService", "AdministrationMcService\AdministrationMcService.csproj", "{84503B52-13C4-4A5D-BF4E-2D9E0CA282F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECommerceMcService", "ECommerceMcService\ECommerceMcService.csproj", "{7C713A59-0214-44E3-B6B6-2EFFF2B3F54D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{84503B52-13C4-4A5D-BF4E-2D9E0CA282F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84503B52-13C4-4A5D-BF4E-2D9E0CA282F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84503B52-13C4-4A5D-BF4E-2D9E0CA282F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C713A59-0214-44E3-B6B6-2EFFF2B3F54D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C713A59-0214-44E3-B6B6-2EFFF2B3F54D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C713A59-0214-44E3-B6B6-2EFFF2B3F54D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C713A59-0214-44E3-B6B6-2EFFF2B3F54D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
