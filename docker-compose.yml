@@ -14,7 +14,11 @@ services:
       - "5432:5432"
 
   app1:
+    build:
+      context: ./MagasinCentral
+      dockerfile: Dockerfile
     image: magasincentral-api:latest
+    restart: on-failure
     container_name: app1
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
@@ -47,6 +51,7 @@ services:
       context: ./CatalogueMcService
       dockerfile: Dockerfile
     image: catalogue-mc-service:latest
+    restart: on-failure
     container_name: magasincentral-catalogue
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
@@ -75,6 +80,7 @@ services:
       context: ./inventaireMcService
       dockerfile: Dockerfile
     image: inventaire-mc-service:latest
+    restart: on-failure
     container_name: magasincentral-inventaire
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
@@ -103,6 +109,7 @@ services:
       context: ./venteMcService
       dockerfile: Dockerfile
     image: vente-mc-service:latest
+    restart: on-failure
     container_name: magasincentral-vente
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
@@ -133,6 +140,7 @@ services:
       context: ./administrationMcService
       dockerfile: Dockerfile
     image: administration-mc-service:latest
+    restart: on-failure
     container_name: magasincentral-administration
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"

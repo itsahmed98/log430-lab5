@@ -1,23 +1,17 @@
-# Use official .NET 8.0 SDK to build the app
+# Stage 1: build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /src
 
-# Copy project files
-COPY *.sln .
-COPY MagasinCentral/*.csproj ./MagasinCentral/
-COPY MagasinCentral.Tests/*.csproj ./MagasinCentral.Tests/
+# copy csproj and restore
+COPY ["MagasinCentral.csproj", "./"]
+RUN dotnet restore "./MagasinCentral.csproj"
 
-# Restore dependencies
-RUN dotnet restore
-
-# Copy everything and build
+# copy everything else and publish
 COPY . .
-WORKDIR /app/MagasinCentral
-RUN dotnet publish -c Release -o /out
+RUN dotnet publish "MagasinCentral.csproj" -c Release -o /app/publish
 
-# Runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Stage 2: runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
-COPY --from=build /out .
-
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "MagasinCentral.dll"]
