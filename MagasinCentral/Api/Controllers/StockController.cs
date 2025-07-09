@@ -1,59 +1,56 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MagasinCentral.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using MagasinCentral.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MagasinCentral.Api.Controllers
 {
     /// <summary>
-    /// Contrôleur pour le stock des magasins.
+    /// Contrôleur pour le stock des magasins (appel du microservice StockMcService).
     /// </summary>
     [ApiController]
-    [Route("api/v1/stocks")]
-    //[Authorize]
+    [Route("api/v1/inventaire")]
     public class StockController : ControllerBase
     {
-        private readonly IStockService _stockService;
         private readonly ILogger<StockController> _logger;
+        private readonly HttpClient _httpClient;
 
         /// <summary>
-        /// Constructeur du contrôleur de rapport.
+        /// Constructeur du contrôleur.
         /// </summary>
         /// <param name="logger"></param>
-        /// <param name="stockService"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public StockController(ILogger<StockController> logger, IStockService stockService)
+        /// <param name="httpClientFactory"></param>
+        public StockController(ILogger<StockController> logger, IHttpClientFactory httpClientFactory)
         {
-            {
-                _stockService = stockService ?? throw new ArgumentNullException(nameof(stockService));
-                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            }
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _httpClient = httpClientFactory?.CreateClient("InventaireMcService") ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
         /// <summary>
-        /// Retourner la quantité de stock pour un magasin spécifique (avec le ID).
+        /// Récupérer le stock d’un magasin spécifique.
         /// </summary>
-        /// <param name="magasinId">L'identifiant du magasin dans lequel on veut récupérer la quantité du stock</param>
-        /// <returns></returns>
-        [HttpGet(Name = "GetStockMagasin")]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        /// <param name="magasinId">Identifiant du magasin</param>
+        [HttpGet("{magasinId:int}")]
+        [ProducesResponseType(typeof(List<StockDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<int>> GetStockMagasin(int magasinId)
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public async Task<ActionResult<List<StockDto>>> GetStockMagasin(int magasinId)
         {
-            _logger.LogInformation("Récupération du stock pour le magasin avec ID {MagasinId}", magasinId);
             try
             {
-                int? quantite = await _stockService.GetStockByMagasinId(magasinId);
+                var stocks = await _httpClient.GetFromJsonAsync<List<StockDto>>($"{_httpClient.BaseAddress}/stocks/stockmagasin/{magasinId}");
 
-                if (quantite == null)
+                if (stocks == null || !stocks.Any())
+                {
+                    _logger.LogWarning("Aucun stock trouvé pour le magasin ID={MagasinId}", magasinId);
                     return NotFound();
+                }
 
-                return quantite.Value;
+                _logger.LogInformation("Stock récupéré pour magasin ID={MagasinId}. Nombre de produits : {Count}", magasinId, stocks.Count);
+                return Ok(stocks);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur lors de la récupération du stock du magasin: {MagasinId}", magasinId);
+                _logger.LogError(ex, "Erreur lors de la récupération du stock pour le magasin ID={MagasinId}", magasinId);
                 return StatusCode(500, "Une erreur s'est produite lors de la récupération du stock.");
             }
         }

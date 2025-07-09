@@ -62,25 +62,31 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Magasin Central API V1");
-        c.RoutePrefix = "swagger";
-    });
 }
 else
 {
     app.UseExceptionHandler("/Home/Error");
 }
 
-app.UseStaticFiles();
+app.UseRouting();
 app.UseCors("AllowFrontend");
 
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Magasin Central API V1");
+    c.RoutePrefix = "swagger";
+});
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
+app.UseStaticFiles();
 app.UseHttpMetrics(); // Middleware pour les m�triques HTTP
 app.MapMetrics();
 app.UseResponseCaching();
-app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();

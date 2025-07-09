@@ -1,54 +1,56 @@
 ﻿using MagasinCentral.Models;
-using MagasinCentral.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagasinCentral.Api.Controllers
 {
+    /// <summary>
+    /// Contrôleur pour les rapports consolidés des ventes.
+    /// </summary>
     [ApiController]
-    [Route("api/v1/rapport")]
+    [Route("api/v1/administration/rapports")]
     //[Authorize]
     public class RapportController : ControllerBase
     {
         private readonly ILogger<RapportController> _logger;
-        private readonly IRapportService _rapportService;
+        private readonly HttpClient _httpClient;
 
-        public RapportController(ILogger<RapportController> logger, IRapportService rapportService)
+        /// <summary>
+        /// Constructeur du contrôleur de rapport.
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="httpClientFactory"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public RapportController(ILogger<RapportController> logger, IHttpClientFactory httpClientFactory)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _rapportService = rapportService ?? throw new ArgumentNullException(nameof(rapportService));
+            {
+                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+                _httpClient = httpClientFactory?.CreateClient("AdministrationMcService") ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            }
         }
 
         /// <summary>
-        /// Récupère le rapport consolidé des ventes.
+        /// Récupérer le rapport consolidé des ventes.
         /// </summary>
-        /// <returns>Un rapport consolidé des ventes des magasins</returns>
+        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(RapportDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<RapportDto>> Get()
+        public async Task<IActionResult> RapportConsolide()
         {
-            _logger.LogInformation("Début de la génération du rapport consolidé des ventes.");
+            IActionResult result = null!;
 
             try
             {
-                var rapport = await _rapportService.ObtenirRapportConsolideAsync();
-
-                if (rapport == null)
-                {
-                    _logger.LogWarning("Aucun rapport généré : le service a retourné null.");
-                    return NotFound("Aucun rapport disponible.");
-                }
-
-                _logger.LogInformation("Rapport consolidé généré avec succès.");
-                return Ok(rapport);
+                result = Ok(await _httpClient.GetFromJsonAsync<RapportVentesDto>($"{_httpClient.BaseAddress}/rapports"));
+                _logger.LogInformation("Rapport consolidé récupéré avec succès.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur lors de la génération du rapport consolidé.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Une erreur est survenue lors de la génération du rapport.");
+                _logger.LogError(ex, "Erreur lors de la récupération du rapport consolidé.");
+                result = StatusCode(500, "Une erreur s'est produite lors de la récupération du rapport.");
             }
+
+            return result;
         }
     }
 }
