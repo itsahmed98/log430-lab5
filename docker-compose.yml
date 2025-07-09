@@ -29,38 +29,6 @@ services:
     expose:
       - "80"
 
-  app2:
-    image: magasincentral-api:latest
-    container_name: app2
-    environment:
-      ASPNETCORE_ENVIRONMENT: "Production"
-      ASPNETCORE_URLS: "http://+:80"
-      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Username=magasinuser;Password=magasinpass;Database=magasincentraldb"
-      JwtSettings__Issuer: "MagasinCentralAPI"
-      JwtSettings__Audience: "MagasinCentralClient"
-      JwtSettings__Secret: "MON_CLE_SECRETE_TRES_LONGUE_ET_COMPLEXE"
-      JwtSettings__TokenValidityInMinutes: "60"
-    depends_on:
-      - db
-    expose:
-      - "80"
-  
-  app3:
-    image: magasincentral-api:latest
-    container_name: app3
-    environment:
-      ASPNETCORE_ENVIRONMENT: "Production"
-      ASPNETCORE_URLS: "http://+:80"
-      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Username=magasinuser;Password=magasinpass;Database=magasincentraldb"
-      JwtSettings__Issuer: "MagasinCentralAPI"
-      JwtSettings__Audience: "MagasinCentralClient"
-      JwtSettings__Secret: "MON_CLE_SECRETE_TRES_LONGUE_ET_COMPLEXE"
-      JwtSettings__TokenValidityInMinutes: "60"
-    depends_on:
-      - db
-    expose:
-      - "80"
-
   catalogue-service-db:
     image: postgres:15 
     container_name: catalogue-db
@@ -187,8 +155,6 @@ services:
       - "9090:9090"
     depends_on:
       - app1
-      - app2
-      - app3
 
   # Grafana dashboard
   grafana:
@@ -221,8 +187,39 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - app1
-      - app2
-      - app3
+
+  kong-database:
+    image: postgres:13
+    container_name: kong-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_DB: kong
+      POSTGRES_PASSWORD: kong
+    volumes:
+      - kong_data:/var/lib/postgresql/data
+
+  kong:
+    image: kong:3.4
+    container_name: kong
+    restart: unless-stopped
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: kong
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    ports:
+      - "8000:8000"   # Entrée API (proxy)
+      - "8443:8443"   # Entrée HTTPS (proxy SSL)
+      - "8001:8001"   # Interface admin
+      - "8002:8002"   # Interface admin HTTPS
+    depends_on:
+      - kong-database
 
 volumes:
   db_data:
@@ -232,51 +229,4 @@ volumes:
   administration-db_data:
   grafana_data:
   prometheus_data:
-
-
-
-# {NomService}-service-db:
-#     image: postgres:15 
-#     container_name: {NomService}-db
-#     restart: unless-stopped
-#     environment:
-#       POSTGRES_USER: magasinuser
-#       POSTGRES_PASSWORD: magasinpass
-#       POSTGRES_DB: {NomService}McServiceDb
-#     volumes:
-#       - {NomService}-db_data:/var/lib/postgresql/data
-#     ports:
-#       - "5433:5432"
-
-#   {NomService}-api:
-#     build:
-#       context: ./{NomService}McService
-#       dockerfile: Dockerfile
-#     image: {NomService}-mc-service:latest
-#     container_name: magasincentral-{NomService}
-#     environment:
-#       ASPNETCORE_ENVIRONMENT: "Production"
-#       ASPNETCORE_URLS: "http://+:80"
-#       ConnectionStrings__DefaultConnection: "Host={NomService}-service-db;Port=5432;Username=magasinuser;Password=magasinpass;Database={NomService}McServiceDb"
-#     depends_on:
-#       - {NomService}-service-db
-#     ports:
-#       - "5001:80"
-
-# # Stage 1: build
-# FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-# WORKDIR /src
-
-# # copy csproj and restore
-# COPY ["{NomService}McService.csproj", "./"]
-# RUN dotnet restore "./{NomService}McService.csproj"
-
-# # copy everything else and publish
-# COPY . .
-# RUN dotnet publish "{NomService}McService.csproj" -c Release -o /app/publish
-
-# # Stage 2: runtime
-# FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
-# WORKDIR /app
-# COPY --from=build /app/publish .
-# ENTRYPOINT ["dotnet", "{NomService}McService.dll"]
+  kong_data:
