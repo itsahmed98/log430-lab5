@@ -1,13 +1,14 @@
+# Define services
 $services = @(
-    @{ name = "catalogue-service";      url = "http://magasincentral-catalogue:80";      path = "/catalogue";      strip_path = $true },
-    @{ name = "vente-service";          url = "http://magasincentral-vente:80";          path = "/vente";          strip_path = $true },
-    @{ name = "inventaire-service";     url = "http://magasincentral-inventaire:80";     path = "/inventaire";     strip_path = $true },
+    @{ name = "catalogue-service";      url = "http://catalogue-upstream";           path = "/catalogue";      strip_path = $true; upstream = $true; targets = @("catalogue-api-1:80", "catalogue-api-2:80") },
+    @{ name = "vente-service";          url = "http://magasincentral-vente:80";      path = "/vente";          strip_path = $true },
+    @{ name = "inventaire-service";     url = "http://magasincentral-inventaire:80"; path = "/inventaire";     strip_path = $true },
     @{ name = "administration-service"; url = "http://magasincentral-administration:80"; path = "/administration"; strip_path = $true },
-    @{ name = "ecommerce-service";      url = "http://ecommerce-api:80";                 path = "/ecommerce";      strip_path = $true }
+    @{ name = "ecommerce-service";      url = "http://ecommerce-api:80";             path = "/ecommerce";      strip_path = $true; apiKeyRequired = $true }
 )
 
+# Clean, then create services, routes, upstreams
 foreach ($s in $services) {
-    # Supprimer le service s’il existe déjà
     try {
         Invoke-RestMethod -Method DELETE -Uri "http://localhost:8001/services/$($s.name)" -ErrorAction Stop
         Write-Host "Deleted existing service: $($s.name)"
@@ -15,31 +16,64 @@ foreach ($s in $services) {
         Write-Host "Service $($s.name) does not exist or could not be deleted."
     }
 
-    # Créer le service
-    Write-Host "Creating service: $($s.name)"
-    try {
-        $serviceBody = @{
-            name = $s.name
-            url  = $s.url
-        } | ConvertTo-Json -Depth 10
+    # If upstream is specified, create it and targets
+    if ($s.ContainsKey("upstream") -and $s.upstream) {
+        try {
+            Invoke-RestMethod -Method DELETE -Uri "http://localhost:8001/upstreams/catalogue-upstream" -ErrorAction Stop
+            Write-Host "Deleted existing upstream: catalogue-upstream"
+        } catch {}
 
-        Invoke-RestMethod -Method POST -Uri "http://localhost:8001/services" `
-            -Body $serviceBody -ContentType "application/json"
-    } catch {
-        Write-Host "Failed to create service $($s.name)."
+        Invoke-RestMethod -Method POST -Uri "http://localhost:8001/upstreams" -Body @{ name = "catalogue-upstream" } -ContentType "application/x-www-form-urlencoded"
+        Write-Host "Created upstream: catalogue-upstream"
+
+        foreach ($target in $s.targets) {
+            Invoke-RestMethod -Method POST -Uri "http://localhost:8001/upstreams/catalogue-upstream/targets" `
+                -Body @{ target = $target } -ContentType "application/x-www-form-urlencoded"
+            Write-Host "Added target $target to upstream"
+        }
     }
 
-    # Créer la route
-    Write-Host "Creating route for path: $($s.path)"
-    try {
-        $routeBody = @{
-            paths      = @($s.path)
-            strip_path = $s.strip_path
-        } | ConvertTo-Json -Depth 10
+    # Create the service
+    $serviceBody = @{
+        name = $s.name
+        url  = $s.url
+    } | ConvertTo-Json -Depth 10
 
-        Invoke-RestMethod -Method POST -Uri "http://localhost:8001/services/$($s.name)/routes" `
-            -Body $routeBody -ContentType "application/json"
-    } catch {
-        Write-Host "Failed to create route $($s.path)."
+    Invoke-RestMethod -Method POST -Uri "http://localhost:8001/services" `
+        -Body $serviceBody -ContentType "application/json"
+    Write-Host "Created service: $($s.name)"
+
+    # Create the route
+    $routeBody = @{
+        paths      = @($s.path)
+        strip_path = $s.strip_path
+    } | ConvertTo-Json -Depth 10
+
+    Invoke-RestMethod -Method POST -Uri "http://localhost:8001/services/$($s.name)/routes" `
+        -Body $routeBody -ContentType "application/json"
+    Write-Host "Created route for: $($s.path)"
+
+    # Attach key-auth plugin if required
+    if ($s.ContainsKey("apiKeyRequired") -and $s.apiKeyRequired) {
+        Invoke-RestMethod -Method POST -Uri "http://localhost:8001/services/$($s.name)/plugins" `
+            -Body @{ name = "key-auth" } -ContentType "application/x-www-form-urlencoded"
+        Write-Host "Attached key-auth plugin to service: $($s.name)"
     }
+}
+
+# Create consumer and API key for ecommerce
+try {
+    Invoke-RestMethod -Method POST -Uri "http://localhost:8001/consumers" `
+        -Body @{ username = "client-app" } -ContentType "application/x-www-form-urlencoded"
+    Write-Host "Created consumer: client-app"
+} catch {
+    Write-Host "Consumer already exists: client-app"
+}
+
+try {
+    $key = Invoke-RestMethod -Method POST -Uri "http://localhost:8001/consumers/client-app/key-auth" `
+        -ContentType "application/x-www-form-urlencoded"
+    Write-Host "Generated API key for client-app: $($key.key)"
+} catch {
+    Write-Host "Key already exists for client-app"
 }

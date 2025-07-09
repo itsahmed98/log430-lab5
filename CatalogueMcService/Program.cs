@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using CatalogueMcService.Data;
 using CatalogueMcService.Services;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+
+app.UseHttpMetrics();
+app.MapMetrics();
 
 app.UseRouting();
 
