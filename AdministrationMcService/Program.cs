@@ -49,7 +49,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "Administration Service API",
         Version = "v1",
-        Description = "Microservice pour la gestion administrative des magasins tels que générer des rapports consolidé des ventes et visualiser les performances."
+        Description = "Microservice pour la gestion administrative des magasins tels que gï¿½nï¿½rer des rapports consolidï¿½ des ventes et visualiser les performances."
     });
 
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -58,6 +58,12 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AdminDbContext>();
+    db.Database.Migrate();
+}
 
 if (app.Environment.IsDevelopment())
 {

@@ -25,8 +25,10 @@ namespace MagasinCentral.Controllers
         public async Task<IActionResult> Index()
         {
             _logger.LogInformation("Requête de récupération de la liste des produits envoyée.");
+            var temp = $"{_httpClient.BaseAddress}";
+            _logger.LogInformation("SENDING A REQUEST TO THIS LINK: {temp}", temp);
             var produits = await _httpClient.GetFromJsonAsync<List<ProduitDto>>("");
-            
+
             if (produits == null || !produits.Any())
             {
                 _logger.LogWarning("Aucun produit trouvé dans la base de données.");
