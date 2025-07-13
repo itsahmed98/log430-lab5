@@ -57,21 +57,21 @@ services:
       ConnectionStrings__DefaultConnection: "Host=catalogue-service-db;Port=5432;Username=magasinuser;Password=magasinpass;Database=catalogueMcServiceDb"
     depends_on:
       - catalogue-service-db
-    expose:
-      - "80"
+    ports:
+      - "5010:80"
 
-  catalogue-api-2:
-    image: catalogue-mc-service:latest
-    container_name: catalogue-api-2
-    restart: on-failure
-    environment:
-      ASPNETCORE_ENVIRONMENT: "Production"
-      ASPNETCORE_URLS: "http://+:80"
-      ConnectionStrings__DefaultConnection: "Host=catalogue-service-db;Port=5432;Username=magasinuser;Password=magasinpass;Database=catalogueMcServiceDb"
-    depends_on:
-      - catalogue-service-db
-    expose:
-      - "80"
+  # catalogue-api-2:
+  #   image: catalogue-mc-service:latest
+  #   container_name: catalogue-api-2
+  #   restart: on-failure
+  #   environment:
+  #     ASPNETCORE_ENVIRONMENT: "Production"
+  #     ASPNETCORE_URLS: "http://+:80"
+  #     ConnectionStrings__DefaultConnection: "Host=catalogue-service-db;Port=5432;Username=magasinuser;Password=magasinpass;Database=catalogueMcServiceDb"
+  #   depends_on:
+  #     - catalogue-service-db
+  #   expose:
+  #     - "80"
 
   inventaire-service-db:
     image: postgres:15 
@@ -204,7 +204,6 @@ services:
     depends_on:
       - client-app
       - catalogue-api-1
-      - catalogue-api-2
 
   # Grafana dashboard
   grafana:

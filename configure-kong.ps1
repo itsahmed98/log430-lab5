@@ -1,6 +1,7 @@
 # Define services
 $services = @(
-    @{ name = "catalogue-service"; url = "http://catalogue-upstream"; path = "/catalogue"; strip_path = $true; upstream = $true; targets = @("catalogue-api-1:80", "catalogue-api-2:80") },
+    #@{ name = "catalogue-service"; url = "http://catalogue-upstream"; path = "/catalogue"; strip_path = $true; upstream = $true; targets = @("catalogue-api-1:80", "catalogue-api-2:80") },
+    @{ name = "catalogue-service"; url = "http://catalogue-upstream"; path = "/catalogue"; strip_path = $true; upstream = $true },
     @{ name = "vente-service"; url = "http://magasincentral-vente:80"; path = "/vente"; strip_path = $true },
     @{ name = "inventaire-service"; url = "http://magasincentral-inventaire:80"; path = "/inventaire"; strip_path = $true },
     @{ name = "administration-service"; url = "http://magasincentral-administration:80"; path = "/administration"; strip_path = $true },
