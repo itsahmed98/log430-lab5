@@ -18,7 +18,7 @@ jobs:
           - InventaireMcService
           - VenteMcService
           - AdministrationMcService
-          - EcommerceMcService
+          - ECommerceMcService
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -64,7 +64,7 @@ jobs:
             context: ./AdministrationMcService
             dockerfile: Dockerfile
           - name: ecommerce-mc-service
-            context: ./EcommerceMcService
+            context: ./ECommerceMcService
             dockerfile: Dockerfile
     steps:
       - name: Checkout repository
