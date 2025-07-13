@@ -85,22 +85,46 @@ docker-compose up -d
 
 ---
 
-## Accès aux services
+## Accès aux services en prod
+
+commande: docker-compose up --build -d pour lancer les conteneurs
 
 | Composant            | URL                                                                                                                       |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | Application MVC      | [http://localhost:8080](http://localhost:8080)                                                                            |
 | Swagger (API client) | [http://localhost:8080/swagger](http://localhost:8080/swagger)                                                            |
-| CatalogueMcService   | [http://http://localhost:5001/swagger](http://localhost:5001/swagger)                                                     |
-| InventaireMcService  | [http://http://localhost:5002/swagger](http://localhost:5002/swagger)                                                     |
-| VenteMcService       | [http://http://localhost:5003/swagger](http://localhost:5003/swagger)                                                     |
-| AdminMcService       | [http://http://localhost:5004/swagger](http://localhost:5004/swagger)                                                     |
-| ECommerceMcService   | [http://http://localhost:5005/swagger](http://localhost:5005/swagger)                                                     |
+| CatalogueMcService   | [http://localhost:5001/swagger](http://localhost:5001/swagger)                                                            |
+| InventaireMcService  | [http://localhost:5002/swagger](http://localhost:5002/swagger)                                                            |
+| VenteMcService       | [http://localhost:5003/swagger](http://localhost:5003/swagger)                                                            |
+| AdminMcService       | [http://localhost:5004/swagger](http://localhost:5004/swagger)                                                            |
+| ECommerceMcService   | [http://localhost:5005/swagger](http://localhost:5005/swagger)                                                            |
 | Kong (API Gateway)   | [http://localhost:8000](http://localhost:8000)                                                                            |
 | Kong Admin           | [http://localhost:8001](http://localhost:8001)                                                                            |
 | Prometheus           | [http://localhost:9090](http://localhost:9090)                                                                            |
 | Grafana              | [http://localhost:3000](http://localhost:3000) login: admin et password: admin (peut être changer après le premier login) |
 | Grafana dashboards   | [http://localhost:3000](http://localhost:3000/dashboards)                                                                 |
+
+---
+
+## Accès aux services en developpement
+
+aller dans chaque projet et faire la commande : dotnet run
+
+| Composant            | URL                                                              |
+| -------------------- | ---------------------------------------------------------------- |
+| Application MVC      | [https://localhost:7230/](https://localhost:7230/)               |
+| Swagger (API client) | [https://localhost:7230/swagger](https://localhost:7230/swagger) |
+| CatalogueMcService   | [https://localhost:7104/swagger](https://localhost:7104/swagger) |
+| InventaireMcService  | [https://localhost:7221/swagger](https://localhost:7221/swagger) |
+| VenteMcService       | [http://localhost:5065/swagger](http://localhost:5065/swagger)   |
+| AdminMcService       | [https://localhost:7056/swagger](https://localhost:7056/swagger) |
+| ECommerceMcService   | [https://localhost:7199/swagger](https://localhost:7199/swagger) |
+
+---
+
+## Tests integration et unitaires
+
+dotnet test
 
 ---
 
