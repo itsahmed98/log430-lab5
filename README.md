@@ -87,19 +87,20 @@ docker-compose up -d
 
 ## Accès aux services
 
-| Composant           | URL                                                                                                                       |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Application MVC     | [http://localhost:8080](http://localhost:8080)                                                                            |
-| Swagger (client)    | [http://localhost:8080/swagger](http://localhost:8080/swagger)                                                            |
-| CatalogueMcService  | [http://http://localhost:5001/swagger](http://localhost:5001/swagger)                                                     |
-| InventaireMcService | [http://http://localhost:5002/swagger](http://localhost:5002/swagger)                                                     |
-| VenteMcService      | [http://http://localhost:5003/swagger](http://localhost:5003/swagger)                                                     |
-| AdminMcService      | [http://http://localhost:5004/swagger](http://localhost:5004/swagger)                                                     |
-| ECommerceMcService  | [http://http://localhost:5005/swagger](http://localhost:5005/swagger)                                                     |
-| Kong (API Gateway)  | [http://localhost:8000](http://localhost:8000)                                                                            |
-| Kong Admin          | [http://localhost:8001](http://localhost:8001)                                                                            |
-| Prometheus          | [http://localhost:9090](http://localhost:9090)                                                                            |
-| Grafana             | [http://localhost:3000](http://localhost:3000) login: admin et password: admin (peut être changer après le premier login) |
+| Composant            | URL                                                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Application MVC      | [http://localhost:8080](http://localhost:8080)                                                                            |
+| Swagger (API client) | [http://localhost:8080/swagger](http://localhost:8080/swagger)                                                            |
+| CatalogueMcService   | [http://http://localhost:5001/swagger](http://localhost:5001/swagger)                                                     |
+| InventaireMcService  | [http://http://localhost:5002/swagger](http://localhost:5002/swagger)                                                     |
+| VenteMcService       | [http://http://localhost:5003/swagger](http://localhost:5003/swagger)                                                     |
+| AdminMcService       | [http://http://localhost:5004/swagger](http://localhost:5004/swagger)                                                     |
+| ECommerceMcService   | [http://http://localhost:5005/swagger](http://localhost:5005/swagger)                                                     |
+| Kong (API Gateway)   | [http://localhost:8000](http://localhost:8000)                                                                            |
+| Kong Admin           | [http://localhost:8001](http://localhost:8001)                                                                            |
+| Prometheus           | [http://localhost:9090](http://localhost:9090)                                                                            |
+| Grafana              | [http://localhost:3000](http://localhost:3000) login: admin et password: admin (peut être changer après le premier login) |
+| Grafana dashboards   | [http://localhost:3000](http://localhost:3000/dashboards)                                                                 |
 
 ---
 
