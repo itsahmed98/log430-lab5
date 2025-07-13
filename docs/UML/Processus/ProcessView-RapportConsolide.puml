@@ -2,24 +2,34 @@
 title Process View - Générer un Rapport Consolidé
 actor "Gestionnaire" as Gestionnaire
 
-participant "Browser" as Client
-participant "RapportController" as RC
-participant "RapportService" as RS
-participant "MagasinDbContext" as Db
+participant "Browser" as browser
+participant "MagasinCentral\n<<AdministrationController>>" as AC
+participant "AdministrationMcService\n<<RapportController>>" as rapportController
+participant "AdministrationMcService\n<<RapportService>>" as rapportService
+participant "VenteMcService\n<<VenteController>>" as venteController
+participant "CatalogueMcService\n<<CatalogueController>>" as catalogueController
+participant "InventaireMcService\n<<InventaireController>>" as inventaireController
 
-Gestionnaire -> Client : GET /Rapport
-Client -> RC : GET /Rapport
-RC -> RS : rapportConsolide =\nObtenirRapportConsolideAsync()
+Gestionnaire -> browser : GET /Rapport
+browser -> AC : GET /Rapport
+AC -> rapportController : GET api/v1/administration/rapports
+rapportController -> rapportService : rapportConsolide =\nObtenirRapportConsolideAsync()
 
+== Recuperer les ventes ==
+rapportService -> venteController : ventes = GET api/v1/ventes
+venteController --> rapportService : Liste des ventes
 
-== Charger les magasins ==
-RS -> Db : Magasins.Include(m => m.Ventes).\nThenInclude(v => v.Produit).\nInclude(m => m.StocksProduits).\nThenInclude(sp => sp.Produit).\nToListAsync()
-Db --> RS : List<Magasin> 
+== Recuperer les produits ==
+rapportService -> catalogueController : produits = GET api/v1/Catalogue/produits
+catalogueController --> rapportService : Liste des produits
 
-== Charger le stock central ==
-RS -> Db : StocksCentraux.\nInclude(sc => sc.Produit).\nToListAsync()
-Db --> RS : List<StockCentral> 
+== Recuperer les stocks ==
+rapportService -> inventaireController : stocks = GET api/v1/inventaire/stocks
+inventaireController --> rapportService : Liste des stocks
 
-RS --> RC : List<RapportDto>
-RC --> Client : 200 OK + JSON
+rapportService -> rapportService : Construire le\nrapport consolidé
+
+rapportService --> rapportController : rapportConsolide
+rapportController --> AC : rapportConsolide
+AC -> browser : Afficher le rapport consolidé
 @enduml

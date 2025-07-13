@@ -1,0 +1,28 @@
+@startuml "Process View - Enregistrer une vente"
+title Process View - Enregistrer une vente
+actor "utilisateur" as utilisateur
+
+participant "Browser" as browser
+participant "MagasinCentral\n<<VenteController>>" as venteControllerClient
+participant "VenteMcService\n<<VenteController>>" as venteController
+participant "VenteMcService\n<<VenteService>>" as venteService
+participant "CatalogueMcService\n<<CatalogueController>>" as catalogueController
+participant "InventaireMcService\n<<InventaireController>>" as inventaireController
+participant "VenteMcService\n<<VenteDbContext>>" as venteDbContext
+
+utilisateur -> browser : Enregistrer une vente
+browser -> venteControllerClient : POST /Vente
+venteControllerClient -> venteController : POST api/v1/ventes ,\nPayload: vente
+venteController -> venteService : CreerVenteAsync(vente)
+
+venteService -> catalogueController : produits = GET api/v1/Catalogue/produits/{vente.produitId}
+catalogueController --> venteService : Produit
+venteService -> venteDbContext : Add(vente)
+venteService -> venteDbContext : SaveChangesAsync()
+venteService -> venteService : UpdateStock(vente.MagasinId, vente.ProduitId, vente.Quantite)
+venteService -> inventaireController : PUT api/v1/inventaire/stocks/{vente.MagasinId}/{vente.ProduitId}/{vente.Quantite}
+inventaireController --> venteService : 204 No Content
+venteService --> venteController : 204 No Content
+venteController --> venteControllerClient : 204 No Content
+venteControllerClient --> browser : Afficher confirmation de vente
+@enduml

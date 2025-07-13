@@ -1,48 +1,105 @@
-@startuml
-skinparam handwritten true
-top to bottom direction
+@startuml title "Vue Physique - Microservices"
+title Vue Physique - Architecture Évoluée
+allowmixing
+skinparam linetype ortho
+skinparam shadowing false
+left to right direction
 
-node "Hôte\n(Windows/macOS/Linux)" as Host {
-  rectangle "Couche Présentation" {
-    node "Client Browser" as Browser {
-      [Razor Pages\n(HTML/CSS/JS)] as RazorPages
-    }
-  }
-  
-  rectangle "Couche Métier" {
-    node "Docker Container : MagasinCentral" as metier {
-      component "Controllers" as Controllers
-      component "Services" as Services
-      component "MagasinCentral.Data.dll\n(EF Core & Models)" as DataLayer
+' --- Clients and Entry Points ---
+node "Kong API Gateway" as kong
 
-      note right of Controllers
-        gère les requêtes HTTP/HTTPS
-        et appelle les services métier:
-        PerformaceController
-        ProduitController
-        ...
-      end note
+' --- Client App ---
+' node "client-app" as clientApp {
+'   component "(.NET Web MVC)"
+' }
 
-      note right of Services
-        contient la logique métier:
-        - ProduitService
-        - RapportService
-        - ReapprovisionnementService
-        - ...
-      end note
-    }
-  }
-
-  rectangle "Couche Données" {
-    node "Docker Container : postgresql" as database {
-      database "Base de données" as DB
-    }
-  }
-
-  Browser --> Controllers : HTTP/HTTPS
-  Controllers --> Services : Utilise
-  metier --> database : TCP
-  Services --> DataLayer : Accède aux données
+node "client-app" as clientApp {
+  component "Client App" as clientAppComponent
+  note right
+    Port 80
+  end note
 }
 
+' --- Microservices ---
+node "catalogue-api" as catalogueMcService {
+  component "Catalogue API" as catalogueApi
+}
+
+node "inventaire-api" as inventaireMcService {
+  component "Inventaire API" as inventaireApi
+}
+
+node "vente-api" as venteMcService {
+  component "Vente API" as venteApi
+}
+
+node "administration-api" as administrationMcService {
+  component "Administration API" as adminApi
+}
+
+node "ecommerce-api" as ecommerceMcService {
+  component "ECommerce API" as ecommerceApi
+}
+
+
+node "Docker Container : postgresql" as ecommerce-service-db {
+    database "ECommerce DB" as ecommerceDb
+}
+
+node "Docker Container : postgresql" as administration-service-db {
+    database "Administration DB" as administrationDb
+}
+
+node "Docker Container : postgresql" as vente-service-db {
+    database "Vente DB" as venteDb
+}
+
+node "Docker Container : postgresql" as inventaire-service-db {
+    database "Inventaire DB" as inventaireDb
+}
+
+node "Docker Container : postgresql" as catalogue-service-db {
+    database "Catalogue DB" as catalogueDb
+}
+
+' --- Observability ---
+node "Observabilité" {
+  component "Prometheus" 
+  note right
+    port 9090
+  end note
+  component "Grafana"
+  note right
+    port 3000
+  end note
+  component "Node Exporter" as nodeExporter
+  note right
+    port 9100
+  end note
+}
+
+' --- Kong DB ---
+database "Kong DB" as kongDb
+
+' --- Connections ---
+kong --> catalogueMcService
+kong --> inventaireMcService
+kong --> venteMcService
+kong --> administrationMcService
+kong --> ecommerceMcService
+
+
+clientApp --> kong : HTTP Requests
+
+catalogueMcService --> catalogueDb
+inventaireMcService --> inventaireDb
+venteMcService --> venteDb
+administrationMcService --> administrationDb
+ecommerceMcService --> ecommerceDb
+
+Prometheus --> catalogueMcService : scrape
+Prometheus --> nodeExporter : scrape
+Grafana --> Prometheus
+
+kong --> kongDb
 @enduml

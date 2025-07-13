@@ -1,141 +1,364 @@
-@startuml "Vue Logique - Magasin Central"
-title Vue Logique - Magasin Central
-top to bottom direction
+@startuml "Vue Logique - Microservices"
+title Vue Logique - Architecture Évoluée
+allowmixing
+left to right direction
 skinparam class {
   BackgroundColor White
-  ArrowColor SeaGreen
+  ArrowColor DarkGreen
+  BorderColor Black
 }
 
-package "MagasinCentral" {
-    Package "Models" as models{
-        class Produit {
-            +int ProduitId
-            +string Nom
-            +string Categorie
-            +decimal Prix
-            +string Description
+database "AdministrationService DB" as adminDb
+
+package "AdministrationMcService" as adminMcService {
+    rectangle "Controllers" as adminSvcControllers{
+        class "MagasinController" as magasinController {
+            +GetAll()
+            +GetById(id: int)
         }
-        class Magasin {
-            +int MagasinId
-            +string Nom
-            +string Adresse
+        class "PerformanceController" as performanceController {
+            +GetAll()
         }
-        class MagasinStockProduit {
-            +int MagasinId
-            +int ProduitId
-            +int Quantite
-        }
-        class StockCentral {
-            +int ProduitId
-            +int Quantite
-        }
-        class Vente {
-            +int VenteId
-            +DateTime Date
-            +int MagasinId
-            +int ProduitId
-            +int Quantite
-            +decimal PrixUnitaire
-        }
-        class DemandeReapprovisionnement {
-            +int DemandeId
-            +int MagasinId
-            +int ProduitId
-            +int QuantiteDemandee
-            +DateTime DateDemande
-            +string Statut
+        class "RapportController" as rapportController {
+            +GetAll()
         }
     }
 
-    package "Controllers" as controllers{
-        class ProduitController {
-            +Index()
-            +Modifier(int produitId)
-            +Modifier(Produit produit)
-            +Recherche(string produit)
-        }
-        class RapportController {
-            +Index()
+    class "AdminDbContext" as adminDbContext {
+    }
 
+    rectangle "Models" as adminSvcModels {
+        class "Magasin" as magasin {
+            +MagasinId: int
+            +Nom: string
+            +Adresse: string
         }
-        class TraiterDemandesController {
-            +Index()
-            +Traiter(int demandeId, bool approuver)
-        }
-        class PerformancesController {
-            Index()
-        }
-        class ReapprovisionnementController {
-            +Index(int magasinId)
-            +DemanderReapprovisionnement(int magasinId, int produitId, int quantite)
-            +DemandesReapprovisionnement()
-
+        class "Performance" as performance {
+            +PerformanceId: int
+            +MagasinId: int
+            +Date: DateTime
+            +ChiffreAffaires: decimal
         }
     }
 
-    package "Services" as services{
-        class ProduitService {
-            +GetAllProduitsAsync()
-            +GetProduitByIdAsync(int produitId)
-            +ModifierProduitAsync(Produit produit)
-            +RechercherProduitsAsync(string terme)
+    rectangle "Services" as adminSvcServices {
+        class "MagasinService" as magasinService {
+            +GetAllAsync()
+            +GetMagasinByIdAsync(id: int)
         }
-        class RapportService {
-            +ObtenirRapportConsolideAsync()
+        class "PerformanceService" as performanceService {
+            +GetAllPerformances()
         }
-        class StockService {
-            +GetStockByMagasinId(int magasinId)
+        class "RapportService" as rapportService {
+            +ObtenirRapportConsolide()
         }
-        class PerformancesService {
-            +GetPerformances()
+
+        interface "IMagasinService" as iMagasinService {
         }
-        class ReapprovisionnementService {
-            +GetStocksAsync(int magasinId)
-            +CreerDemandeReapprovisionnementAsync(int magasinId, int produitId, int quantiteDemande)
-            +GetDemandesReapprovisionnementAsync()
-            +GetDemandesEnAttenteAsync()
-            +TraiterDemandeAsync(int demandeId, bool approuver)
+
+        interface "IPerformanceService" as iPerformanceService {
         }
-        class VenteService {
-            +CreerVenteAsync(int magasinId, List<(int produitId, int quantite)> lignes)
-            +AnnulerVenteAsync(int venteId)
-            +GetVentesAsync()
+
+        interface "IRapportService" as iRapportService {
         }
     }
 
-    package "Api" as api {
-        class ProduitApiController {
-            +Produits()
-            +Produit(int produitId)
-            +Modifier([FromRoute] int produitId, [FromBody] Produit payload)
-        }
-        class RapportApiController {
-            +RapportConsolide()
-        }
-        class AuthApiController {
-            +Login([FromBody] LoginRequest request)
-            +Register([FromBody] RegisterRequest request)
-        }
-        class PerformancesApiController {
-            +GetPerformances()
-        }
-        class StockApiController {
-            +GetStockMagasin(int magasinId)
+    magasinController --> magasinService : utilise
+    performanceController --> performanceService : utilise
+    rapportController --> rapportService : utilise
+    magasinService ..|> iMagasinService : implémente
+    performanceService ..|> iPerformanceService : implémente
+    rapportService ..|> iRapportService : implémente
+    adminSvcServices --> adminDbContext : utilise
+    adminDbContext --> adminDb : accède
+    adminSvcServices --> adminSvcModels : manipule
+}
+
+database "CatalogueService DB" as catalogueDb
+
+package "CatalogueMcService" as catalogueMcService {
+    rectangle "Controllers" as catalogueSvcControllers {
+        class "CatalogueController" as catalogueController {
+            +GetProduits()
+            +GetProduit(produitId: int)
+            +ModifierProduit(produitId: int, produit: ProduitDto)
+            +Rechercher(query: string)
         }
     }
+
+    class "CatalogueDbContext" as catalogueDbContext {
+    }
+
+    rectangle "Models" as catalogueSvcModels {
+        class "Produit" as produit {
+            +ProduitId: int
+            +Nom: string
+            +Prix: decimal
+            +Categorie: string
+            +Description: string
+        }
+    }
+    
+    rectangle "Services" as catalogueSvcServices {
+        class "CatalogueService" as catalogueService {
+            +GetAllProduits()
+            +GetProduitByIdAsync(id: int)
+            +ModifierProduitAsync(id: int, produit: ProduitDto)
+            +RechercherProduitsAsync(query: string)
+        }
+
+        interface "ICatalogueService" as icatalogueService {
+        }
+    }
+
+    catalogueController --> catalogueService : utilise
+    catalogueService ..|> icatalogueService : implémente
+    catalogueSvcServices --> catalogueDbContext : utilise
+    catalogueDbContext --> catalogueDb : accède
+    catalogueSvcServices --> catalogueSvcModels : manipule
 }
 
 
-Magasin "1" -- "0..*" MagasinStockProduit : stocks
-Produit "1" -- "0..*" MagasinStockProduit
-Produit "1" -- "1" StockCentral
-Magasin "1" -- "0..*" Vente
-Produit "1" -- "0..*" Vente
-Magasin "1" -- "0..*" DemandeReapprovisionnement
-Produit "1" -- "0..*" DemandeReapprovisionnement
+database "ECommerceService DB" as eCommerceDb
+package "ECommerceMcService" as eCommerceMcService {
+    rectangle "Controllers" as eCommerceSvcControllers {
+        class "ClientController" as clientController {
+            +GetAll()
+            +GetOne(id: int)
+            +Create(client: ClientDto)
+        }
 
-controllers -> services : utilise
-services -> models : accède aux données
-api -> services : utilise
+        class "PanierController" as panierController {
+            +GetPanier(clientId: int)
+            +Ajouter(clientId: int, lignePanier: LignePanierDto)
+            +Supprimer(id: int, produitId: int)
+            +ValiderCommande(panierId: int)
+        }
+    }
+
+    class "ECommerceDbContext" as eCommerceDbContext {
+    }
+
+    rectangle "Models" as eCommerceSvcModels {
+        class "Client" as client {
+            +ClientId: int
+            +Nom: string
+            +Courriel: string
+            +Addresse: string
+        }
+        class "Panier" as panier {
+            +PanierId: int
+            +ClientId: int
+            +Lignes: List<LignePanier>
+        }
+        class "LignePanier" as lignePanier {
+            +LignePanierId: int
+            +PanierId: int
+            +ProduitId: int
+            +Quantite: int
+        }
+    }
+
+    rectangle "Services" as eCommerceSvcServices {
+        class "ClientService" as clientService {
+            +GetAllClients()
+            +GetClientByIdAsync(id: int)
+            +CreateClientAsync(client: ClientDto)
+        }
+        class "PanierService" as panierService {
+            +GetPanierByClientIdAsync(clientId: int)
+            +AjouterLignePanierAsync(clientId: int, lignePanier: LignePanierDto)
+            +SupprimerLignePanierAsync(id: int, produitId: int)
+            +ValiderCommandeAsync(panierId: int)
+        }
+
+        interface "IClientService" as iClientService {
+        }
+
+        interface "IPanierService" as iPanierService {
+        }
+    }
+
+    clientController --> clientService : utilise
+    panierController --> panierService : utilise
+    clientService ..|> iClientService : implémente
+    panierService ..|> iPanierService : implémente
+    eCommerceSvcServices --> eCommerceDbContext : utilise
+    eCommerceDbContext --> eCommerceDb : accède
+    eCommerceSvcServices --> eCommerceSvcModels : manipule
+}
+
+
+database "InventaireService DB" as inventaireDb
+
+package "InventaireMcService" as inventaireMcService {
+    rectangle "Controllers" as inventaireSvcControllers {
+        class "ReapprovisionnementController" as reapproController {
+            +CreerDemande()
+            +GetEnAttente()
+            +ValiderDemande(id: int)
+        }
+
+        class "StockController" as stockController {
+            +GetAll()
+            +GetStockCentral()
+            +GetStockMagasin(magasinId: int)
+            +UpdateStock(magasinId: int, produitId: int, quantite: int)
+        }
+    }
+
+    class "InventaireDbContext" as inventaireDbContext {
+    }
+
+    rectangle "Models" as inventaireSvcModels {
+        class "StockItem" as stockIem {
+            +MagasinId: int
+            +ProduitId: int
+            +Quantite: int
+        }
+
+        class "DemandeReapprovisionnement" as demandeReappro {
+            +DemandeId: int
+            +ProduitId: int
+            +MagasinId: int
+            +Quantite: int
+            +Statut: string
+        }
+    }
+
+    rectangle "Services" as inventaireSvcServices {
+        class "ReapprovisionnementService" as reapproService {
+            +CreerDemandeAsync(demande: DemandeReapprovisionnementDto)
+            +GetEnAttenteAsync()
+            +ValiderDemandeAsync(id: int)
+        }
+
+        class "StockService" as stockService {
+            +GetAllStocksAsync()
+            +GetStockCentralAsync()
+            +GetStockMagasinAsync(magasinId: int)
+            +UpdateStockAsync(magasinId: int, produitId: int, quantite: int)
+        }
+
+        class "InventaireService" as inventaireService {
+            +TransfererStock(magasinId: int, produitId: int, quantite: int)
+        }
+
+        interface "IReapprovisionnementService" as iReapproService {
+        }
+
+        interface "IStockService" as iStockService {
+        }
+
+        interface "IInventaireService" as iInventaireService {
+        }
+    }
+
+    reapproController --> reapproService : utilise
+    stockController --> stockService : utilise
+    reapproService ..|> iReapproService : implémente
+    stockService ..|> iStockService : implémente
+    inventaireService ..|> iInventaireService : implémente
+    inventaireDbContext --> inventaireDb : accède
+    inventaireSvcServices --> inventaireSvcModels : manipule
+    reapproService --> inventaireService : utilise
+}
+
+database "VenteService DB" as venteDb
+
+package "VenteMcService" as venteMcService {
+    rectangle "Controllers" as venteSvcControllers {
+        class "VenteController" as venteController {
+            +GetAll()
+            +GetById(id: int)
+            +EnregistrerVente(vente: VenteDto)
+            +GetByMagasin(magasinId: int)
+            +Delete(id: int)
+        }
+    }
+
+    class "VenteDbContext" as venteDbContext {
+    }
+
+    rectangle "Models" as venteSvcModels {
+        class "Vente" as vente {
+            +VenteId: int
+            +MagasinId: int?
+            +ClientId: int?
+            +IsEnLigne: bool
+            +Date: DateTime
+            +Lignes: List<LigneVente>
+        }
+
+        class "LigneVente" as ligneVente {
+            +LigneVenteId: int
+            +VenteId: int
+            +ProduitId: int
+            +Quantite: int
+            +PrixUnitaire: decimal
+        }
+    }
+
+    rectangle "Services" as venteSvcServices {
+        class "VenteService" as venteService {
+            +GetAllVentes()
+            +GetVenteByIdAsync(id: int)
+            +EnregistrerVenteAsync(vente: VenteDto)
+            +GetVentesByMagasinAsync(magasinId: int)
+            +DeleteVenteAsync(id: int)
+        }
+
+        interface "IVenteService" as iVenteService {
+        }
+    }
+
+    venteController --> venteService : utilise
+    venteService ..|> iVenteService : implémente
+    venteSvcServices --> venteDbContext : utilise
+    venteDbContext --> venteDb : accède
+    venteSvcServices --> venteSvcModels : manipule
+
+
+}
+
+package "MagasinCentral" as clientApp {
+    rectangle "Controllers" as clientAppControllers {
+        class "AdministrationController" as administrationController {
+        }
+
+        class "CatalogueController" as catalogueController {
+        }
+
+        class "ECommerceController" as eCommerceController {
+        }
+
+        class "InventaireController" as inventaireController {
+        }
+
+        class "VenteController" as venteController {
+        }
+    }
+
+    rectangle "API" as clientApi {
+
+    }
+}
+
+rapportService --> inventaireMcService : communique via gateway
+rapportService --> catalogueMcService : communique via gateway
+rapportService --> venteMcService : communique via gateway
+
+panierService --> inventaireMcService : communique via gateway
+panierService --> catalogueMcService : communique via gateway
+panierService --> venteMcService : communique via gateway
+
+venteService --> inventaireMcService : communique via gateway
+venteService --> catalogueMcService : communique via gateway
+
+clientApp --> inventaireMcService : communique via gateway
+clientApp --> catalogueMcService : communique via gateway
+clientApp --> eCommerceMcService : communique via gateway
+clientApp --> venteMcService : communique via gateway
+clientApp --> adminMcService : communique via gateway
 
 @enduml

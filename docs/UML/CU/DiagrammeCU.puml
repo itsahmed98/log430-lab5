@@ -1,27 +1,65 @@
-@startuml "Diagramme Cas d'Utilisation - Magasin Central"
-title Diagramme Cas d'Utilisation - Magasin Central
+@startuml "Diagramme Cas d'Utilisation - Microservices"
+
+title Diagramme Cas d'Utilisation - Système Microservices E-Commerce
+
 left to right direction
+skinparam packageStyle rectangle
 
 actor Employe as E
-actor Gestionnaire as G
 actor Responsable as R
+actor Gestionnaire as G
+actor Client as C
 
-G -|> E
+G -|> R
 R -|> E
 
-rectangle "Magasin Central" {
-    usecase UC1 as "UC1 - Générer rapport consolidé"
-    usecase UC2 as "UC2 - Consulter stock central\nDéclencher réapprovisionnement"
-    usecase UC3 as "UC3 - Visualiser performances\ndes magasins"
+package "CatalogueMcService" {
     usecase UC4 as "UC4 - Modifier produit"
-    usecase UC6 as "UC6 - Approuver/refuser demande\nde réapprovisionnement"
-    usecase UC7 as "UC7 - Récupérer un produit"
+    usecase UC7 as "UC7 - Rechercher produit"
 }
 
-G --> UC1
+package "InventaireMcService" {
+    usecase UC2 as "UC2 - Consulter stock central\nDéclencher réapprovisionnement"
+    usecase UC10 as "UC10 - Consulter état du stock"
+    usecase UC6 as "UC6 - Approuver/refuser demande de réapprovisionnement"
+}
+
+package "AdministrationMcService" {
+    usecase UC1 as "UC1 - Générer rapport consolidé"
+    usecase UC3 as "UC3 - Visualiser performances\nmagasins"
+}
+
+
+package "VenteMcService" {
+    usecase UC8 as "UC8 - Enregistrer une vente"
+    usecase UC9 as "UC9 - Gérer les retours"
+}
+
+package "PanierMcService" {
+    usecase UC11 as "UC11 - Ajouter/Retirer produit au panier"
+    usecase UC12 as "UC12 - Consulter son panier"
+    usecase UC13 as "UC13 - Valider commande (checkout)"
+    usecase UC14 as "UC14 - Créer un compte client"
+}
+
+
+' Associations
+
 E --> UC2
-G --> UC3
+E --> UC7
+E --> UC8
+E --> UC9
+E --> UC10
+
 R --> UC4
 R --> UC6
-R --> UC7
+
+G --> UC1
+G --> UC3
+
+C --> UC11
+C --> UC12
+C --> UC13
+C --> UC14
+
 @enduml

@@ -1,25 +1,12 @@
 services:
 
-  db:
-    image: postgres:15
-    container_name: magasincentral-db
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: magasinuser
-      POSTGRES_PASSWORD: magasinpass
-      POSTGRES_DB: magasincentraldb
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
-  app1:
+  client-app:
     build:
       context: ./MagasinCentral
       dockerfile: Dockerfile
     image: magasincentral-api:latest
     restart: on-failure
-    container_name: app1
+    container_name: client-app
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
       ASPNETCORE_URLS: "http://+:80"
@@ -28,8 +15,6 @@ services:
       JwtSettings__Audience: "MagasinCentralClient"
       JwtSettings__Secret: "MON_CLE_SECRETE_TRES_LONGUE_ET_COMPLEXE"
       JwtSettings__TokenValidityInMinutes: "60"
-    depends_on:
-      - db
     expose:
       - "80"
 
@@ -217,7 +202,7 @@ services:
     ports:
       - "9090:9090"
     depends_on:
-      - app1
+      - client-app
       - catalogue-api-1
       - catalogue-api-2
 
@@ -251,7 +236,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - app1
+      - client-app
 
   kong-database:
     image: postgres:13
