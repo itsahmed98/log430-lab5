@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using CatalogueMcService.Data;
 using CatalogueMcService.Services;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,13 +46,17 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<CatalogueDbContext>();
-    db.Database.Migrate();
+    if (db.Database.ProviderName != null && db.Database.ProviderName.Equals("Npgsql.EntityFrameworkCore.PostgreSQL"))
+        db.Database.Migrate();
 }
 
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
 }
+
+app.UseHttpMetrics();
+app.MapMetrics();
 
 app.UseRouting();
 

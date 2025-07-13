@@ -1,111 +1,95 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MagasinCentral.Services;
-using MagasinCentral.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using MagasinCentral.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MagasinCentral.Api.Controllers
 {
+    /// <summary>
+    /// Contrôleur pour la gestion des produits.
+    /// </summary>
     [ApiController]
-    [Route("api/v1/produits")]
     //[Authorize]
-    public class ProduitController : ControllerBase
+    [Route("api/v1/Catalogue/produits")]
+    public class ProduitApiController : ControllerBase
     {
-        private readonly IProduitService _produitService;
-        private readonly ILogger<ProduitController> _logger;
+        private readonly ILogger<ProduitApiController> _logger;
+        private readonly HttpClient _httpClient;
 
-        public ProduitController(ILogger<ProduitController> logger, IProduitService produitService)
+        public ProduitApiController(ILogger<ProduitApiController> logger, IHttpClientFactory httpClientFactory)
         {
-            _produitService = produitService ?? throw new ArgumentNullException(nameof(produitService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _httpClient = httpClientFactory?.CreateClient("CatalogueMcService") ?? throw new ArgumentNullException(nameof(httpClientFactory));
+
         }
 
         /// <summary>
-        /// Récupère la liste de tous les produits.
+        /// Récupérer la liste de tous les produits.
         /// </summary>
+        /// <returns></returns>
         [HttpGet]
+        public async Task<IActionResult> Produits()
+        {
+            return Ok(await _httpClient.GetFromJsonAsync<List<ProduitDto>>(""));
+        }
+
+
+        /// <summary>
+        /// Récupérer un produit par son ID.
+        /// Si le produit n'existe pas, retourne 404 Not Found.
+        /// </summary>
+        /// <param name="produitId"></param>
+        /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetProduits()
-        {
-            _logger.LogInformation("Récupération de tous les produits.");
-
-            try
-            {
-                var produits = await _produitService.GetAllProduitsAsync();
-                return Ok(produits);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors de la récupération des produits.");
-                return StatusCode(StatusCodes.Status500InternalServerError, "Erreur lors de la récupération des produits.");
-            }
-        }
-
-        /// <summary>
-        /// Endpoint pour récupérer un produit par son identifiant.
-        /// </summary>
-        /// <param name="produitId">L'identifiant du produit à récupérer</param>
-        /// <returns></returns>
-        [HttpGet("{produitId:int}")]
-        [ProducesResponseType(typeof(Produit), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetProduit(int produitId)
+        [HttpGet("{produitId:int}")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+        public async Task<IActionResult> Produit(int produitId)
         {
-            _logger.LogInformation("Récupération du produit avec ID {ProduitId}", produitId);
-
-            try
-            {
-                var produit = await _produitService.GetProduitByIdAsync(produitId);
-                if (produit == null)
-                {
-                    _logger.LogWarning("Produit avec ID {ProduitId} non trouvé.", produitId);
-                    return NotFound($"Produit avec ID {produitId} non trouvé.");
-                }
-
-                return Ok(produit);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors de la récupération du produit avec ID {ProduitId}", produitId);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Erreur lors de la récupération du produit.");
-            }
+            _logger.LogInformation("Récupération du produit ID={ProduitId}", produitId);
+            var produit = await _httpClient.GetFromJsonAsync<ProduitDto>($"{_httpClient.BaseAddress}/{produitId}");
+            return produit is not null ? Ok(produit) : NotFound();
         }
 
         /// <summary>
-        /// Endpoint pour la modification d'un produit existant.
+        /// Mettre à jour un produit existant.
         /// </summary>
-        /// <param name="produitId">L'identifiant du produit à modifier</param>
-        /// <param name="produit">Le nouveau produit</param>
-        /// <returns></returns>
+        /// <param name="produitId">ID du produit à modifier.</param>
+        /// <param name="payload">Les nouvelles données du produit.</param>
+        /// 
+        /// test avec:
+        /// {
+        ///    "produitId": 3,
+        ///    "nom": "Clé USB 32 Go",
+        ///    "categorie": "Électronique",
+        ///    "prix": 15.00,
+        ///    "description": "Clé USB 32 Go avec protection améliorée333"
+        /// }
         [HttpPut("{produitId:int}")]
-        [ProducesResponseType(typeof(ProduitDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ModifierProduit(int produitId, [FromBody] ProduitDto produit)
+        public async Task<IActionResult> Modifier(
+            [FromRoute] int produitId,
+            [FromBody] ProduitDto payload)
         {
-            _logger.LogInformation("Modification du produit avec ID {ProduitId}", produitId);
-
             try
             {
-                var produitExistant = await _produitService.GetProduitByIdAsync(produitId);
-                if (produitExistant == null)
-                {
-                    _logger.LogWarning("Produit avec ID {ProduitId} non trouvé.", produitId);
-                    return NotFound($"Produit avec ID {produitId} non trouvé.");
-                }
+                var response = await _httpClient.PutAsJsonAsync($"{_httpClient.BaseAddress}/{produitId}", payload);
+                if (response.IsSuccessStatusCode)
+                    return NoContent();
 
-                await _produitService.ModifierProduitAsync(produitId, produit);
-                return Ok(produit);
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    return NotFound(new { message = $"Produit ID {produitId} non trouvé." });
+
+                _logger.LogError("Erreur inconnue depuis ProduitMcService (StatusCode: {StatusCode})", response.StatusCode);
+                return StatusCode((int)response.StatusCode, "Erreur côté microservice Produit.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur lors de la modification du produit avec ID {ProduitId}", produitId);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Erreur lors de la modification du produit.");
+                _logger.LogError(ex, "Erreur inconnue lors de la modification du produit ID={ProduitId}", produitId);
+                return StatusCode(500, "Une erreur s'est produite côté serveur.");
             }
         }
     }

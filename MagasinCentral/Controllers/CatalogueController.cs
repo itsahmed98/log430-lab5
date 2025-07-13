@@ -26,7 +26,7 @@ namespace MagasinCentral.Controllers
         {
             _logger.LogInformation("Requête de récupération de la liste des produits envoyée.");
             var produits = await _httpClient.GetFromJsonAsync<List<ProduitDto>>("");
-            
+
             if (produits == null || !produits.Any())
             {
                 _logger.LogWarning("Aucun produit trouvé dans la base de données.");
@@ -63,12 +63,6 @@ namespace MagasinCentral.Controllers
         [HttpPost]
         public async Task<IActionResult> Modifier(ProduitDto produit)
         {
-            if (!ModelState.IsValid)
-            {
-                _logger.LogWarning("Échec de validation du formulaire pour le produit ID : {ProduitId}", produit.ProduitId);
-                return View(produit);
-            }
-
             _logger.LogInformation("Envoi des données modifiées pour le produit ID : {ProduitId}", produit.ProduitId);
             var json = JsonSerializer.Serialize(produit);
             var content = new StringContent(json, Encoding.UTF8, "application/json");

@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CatalogueMcService\CatalogueMcService.csproj" />
+    <ProjectReference Include="..\AdministrationMcService\AdministrationMcService.csproj" />
   </ItemGroup>
 
   <ItemGroup>

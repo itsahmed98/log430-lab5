@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AdministrationMcService.Controllers
 {
     /// <summary>
-    /// Un contrôleur pour gérer les rapports consolidés des ventes.
+    /// Un contrôleur API pour générer et récupérer des rapports consolidés de ventes de tous les magasins.
     /// </summary>
     [ApiController]
     [Route("api/v1/administration/rapports")]

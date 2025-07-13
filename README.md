@@ -1,142 +1,191 @@
-# LOG430 - Laboratoire 4 : Monitoring et Cache
+# Magasin Central - Architecture Microservices avec Kong
 
-Ce projet met en place une application .NET Core composée de plusieurs microservices (Magasin, Produits, Ventes, etc.) monitorée avec Prometheus, Grafana, et avec mise en cache locale (MemoryCache).
-
-## 📁 Cloner le projet
-
-```bash
-git clone https://github.com/itsahmed98/log430-lab4.git
-cd log430-lab4
-```
+Ce projet est une application de gestion de magasins développée selon une architecture microservices, orchestrée via Docker Compose, avec **Kong API Gateway** pour la gestion centralisée du routage, de la sécurité, et du load balancing.
 
 ---
 
-## ⚙️ Lancer l'application (mode production via Docker Compose)
+## Structure du projet
 
-1. **Vérifiez que Docker est installé et en cours d'exécution.**
-2. **Lancer tous les services (app, base de données, Prometheus, Grafana, Redis, etc.)**
+log430-lab5/
+│
+├── MagasinCentral/ → Application MVC Razor
+├── CatalogueMcService/ → Microservice catalogue
+├── VenteMcService/ → Microservice ventes
+├── InventaireMcService/ → Microservice inventaire
+├── AdministrationMcService/ → Microservice rapports/performance
+├── ECommerceMcService/ → Microservice e-commerce
+│
+├── docker-compose.yml → Démarrage des services
+├── configure-kong.ps1 → Script de configuration de Kong
+└── README.md → Contient les instructions du démarrage du projet
 
-```bash
-docker compose up --build
-```
+## Technologies utilisées
 
-Cela lancera les services suivants :
-
-- API de l’application (`app1`, `app2`, …)
+- ASP.NET Core (.NET 8)
+- Docker / Docker Compose
 - PostgreSQL
-- Prometheus (monitoring)
-- Grafana (dashboard de visualisation)
-- Node Exporter (métriques systèmes)
-- Redis (optionnel si utilisé)
+- Kong API Gateway
+- Prometheus + Grafana
+- PowerShell (pour configuration automatique de Kong)
+- HTTP Client + Swagger (OpenAPI)
 
 ---
 
-## 🔗 Accès aux interfaces
+## Environnement du production et developpement
 
-| Service            | URL                                      |
-| ------------------ | ---------------------------------------- |
-| Application        | http://localhost (port 80 exposé)        |
-| Prometheus         | http://localhost:9090                    |
-| Prometheus Targets | http://localhost:9090/targets            |
-| Grafana            | http://localhost:3000                    |
-| Grafana Login      | `admin` / `admin` (changer au 1er login) |
+Les environnements sont gérés via appsettings.Development.json (local direct) et appsettings.Production.json (via Kong).
+
+Chaque microservice utilise son propre schéma de base de données PostgreSQL.
+
+Swagger est activé dans tous les services pour la documentation automatique.
 
 ---
 
-## 📈 Monitoring avec Prometheus & Grafana
+## Architecture des microservices
 
-### 1. Configuration de Prometheus
+- `MagasinCentral` : application client MVC Razor
+- `CatalogueMcService` : gestion des produits (ajouts, modification, recherche)
+- `InventaireMcService` : gestion du stock central et local, et réapprovisionnements
+- `VenteMcService` : Enregistrement des ventes en magasin (POS) et ventes en ligne via commandes validées (ECommerce)
+- `AdministrationMcService` : Générer les rapports consolidés des ventes et les performances des magasins
+- `ECommerceMcService` : Gestion du parcours client (Création de compte, panier, commandes en ligne)
+- `Kong` : passerelle API avec routage, sécurité, logging, load balancing
+- `PostgreSQL` : une base de données par microservice
+- `Prometheus / Grafana` : monitoring
 
-Prometheus est configuré pour scrapper :
+---
 
-- L'application (`/metrics` via port 80)
-- `node-exporter` (`:9100`)
+## Démarrage en production
 
-Fichier `prometheus.yml` déjà configuré dans le repo.
+### 1. Cloner le projet
 
-### 2. Configuration Grafana
-
-- Lancer Grafana et ajouter Prometheus comme source de données.
-- Importer les dashboards fournis (ou créer vos propres panels avec les requêtes PromQL).
-
-Exemples de requêtes utiles :
-
-```promql
-rate(http_requests_received_total[1m]) by (code)
-histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[1m]))
+```bash
+git clone https://github.com/itsahmed98/log430-lab5.git
+cd log430-lab5
 ```
 
+### 2. Construire les images Docker
+
+docker-compose build
+
+### 3. Lancer tous les conteneurs
+
+docker-compose up -d
+
 ---
 
-## ⚖️ Test des Stratégies de Load Balancing
+## Redémarrage rapide
 
-Configuration dans `nginx.conf` (Docker) avec plusieurs stratégies :
+Si vous voulez redemmarer tout de zéro :
 
-```nginx
-upstream magasin_api {
-    least_conn;
-    server app1:80 resolve;
-    server app2:80 resolve;
-    ...
+docker-compose down -v (attention! cela va enlever les dashboards grafana deja faits)
+docker-compose build
+docker-compose up -d
+.\configure-kong.ps1
+
+---
+
+## Accès aux services
+
+| Composant            | URL                                                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Application MVC      | [http://localhost:8080](http://localhost:8080)                                                                            |
+| Swagger (API client) | [http://localhost:8080/swagger](http://localhost:8080/swagger)                                                            |
+| CatalogueMcService   | [http://http://localhost:5001/swagger](http://localhost:5001/swagger)                                                     |
+| InventaireMcService  | [http://http://localhost:5002/swagger](http://localhost:5002/swagger)                                                     |
+| VenteMcService       | [http://http://localhost:5003/swagger](http://localhost:5003/swagger)                                                     |
+| AdminMcService       | [http://http://localhost:5004/swagger](http://localhost:5004/swagger)                                                     |
+| ECommerceMcService   | [http://http://localhost:5005/swagger](http://localhost:5005/swagger)                                                     |
+| Kong (API Gateway)   | [http://localhost:8000](http://localhost:8000)                                                                            |
+| Kong Admin           | [http://localhost:8001](http://localhost:8001)                                                                            |
+| Prometheus           | [http://localhost:9090](http://localhost:9090)                                                                            |
+| Grafana              | [http://localhost:3000](http://localhost:3000) login: admin et password: admin (peut être changer après le premier login) |
+| Grafana dashboards   | [http://localhost:3000](http://localhost:3000/dashboards)                                                                 |
+
+---
+
+## Configuration de Kong
+
+À retenir! le script .\configure-kong.ps1 contient dèja tout les configurations nécéssaire pour kong et les plugins. il suffit juste de l'éxécuter.
+Par contre si vous souhaitez ajouter manuellement des configurations, voici comment faire:
+
+### Demarrage
+
+Un script PowerShell configure-kong.ps1 permet de :
+
+- Créer les services et routes dynamiques pour chaque microservice (/catalogue, /vente, etc.)
+- Ajouter des plugins (clés API, logging, etc.)
+
+pour l'éxécuter, allez dans le dossier contenant le script et faites ce commande:
+
+- .\configure-kong.ps1
+
+---
+
+### LoadBalancer
+
+Le script declare un upstream pour 2 instances du catalogueMcService au nom: catalogue-api-1 et -2
+@{ name = "catalogue-service"; url = "http://catalogue-upstream"; path = "/catalogue"; strip_path = $true; upstream = $true; targets = @("catalogue-api-1:80", "catalogue-api-2:80") }
+
+Ensuite vous pouvez aller au (GET http://localhost:8001/upstreams/catalogue-upstream/targets) pour les details
+
+Pour ajouter un target: POST http://localhost:8001/upstreams/catalogue-upstream/targets avec body en format x-www-form-urlencoded:
+
+- target: catalogue-api-2:80
+- weight: 2
+
+Pour supprimer un target: DELETE http://localhost:8001/upstreams/catalogue-upstream/targets/catalogue-api-2:80
+
+### Ajout des clés API
+
+Dans le script, le microservice ECommerceMcService est protéger et il faut une clé api pour accèder ses endpoints. Après l'éxécution du script vous aurez un clé API, il faut ensuite ajouter un header au nom "apikey" avec la valeur de la clé générée.
+
+**Pour une raison d'absence d'authentification et gestion des clés utilisateurs à partir de client-app, j'ai commenté les sections dans le script qui configure la protection des endpoints. Il suffit de de-commenter ces sections et tester les endpoints de ecommerce avec Postman et pas à partir du client app.**
+
+### Sécurité et gestion des accès (CORS et journaux d'accès) - Plugins
+
+Pour voir les plugins tels que CORS et journaux d'accès, faites une requête vers : GET http://localhost:8001/services/{nom-service}/plugins
+Vous allez trouver les plugins sous: "name": "file-log" et "name": "CORS"
+
+**Ajouter PLUGIN des règles de CORS à un service via Kong Admin API**
+
+POST http://localhost:8001/services/{nom-service}/plugins
+
+Méthode 1 – x-www-form-urlencoded (dans Postman) :
+
+name: cors
+config.origins: \*
+config.methods: GET, POST, PUT, DELETE, OPTIONS
+config.headers: Accept, Authorization, Content-Type
+config.exposed_headers: X-Custom-Header
+config.credentials: true
+config.max_age: 3600
+
+Méthode 2 – JSON (si tu choisis raw > JSON dans Postman) :
+
+{
+"name": "cors",
+"config": {
+"origins": ["*"],
+"methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+"headers": ["Accept", "Authorization", "Content-Type"],
+"exposed_headers": ["X-Custom-Header"],
+"credentials": true,
+"max_age": 3600
 }
-```
+}
 
-Pour tester une stratégie différente :
+**Ajouter PLUGIN Journaux d'accès**
 
-1. Décommentez la section souhaitée (least_conn, round robin, ip_hash...)
-2. Rebuild avec `docker compose up --build`
+Pré-requis: Avoir configuré un volume sur le container Kong pour accéder aux logs localement
 
----
+- kong:
+  ...
+  volumes: - ./kong-logs:/var/log/kong
 
-## 🔁 Cache mémoire local
+curl ou Postman:
+curl -X POST http://localhost:8001/services/catalogue-service/plugins \
+ --data "name=file-log" \
+ --data "config.path=/var/log/kong/access.log"
 
-Le cache est implémenté dans les services suivants :
-
-- RapportService
-- PerformancesService
-- ProduitService
-
-Le cache utilise `IMemoryCache` avec une expiration de 5 à 10 minutes selon le service. Cela permet de réduire la charge sur la base de données.
-
----
-
-## 🧪 Lancer en local (hors Docker)
-
-1. S’assurer que PostgreSQL est en cours d’exécution localement.
-2. Modifier `appsettings.Development.json` avec votre chaîne de connexion locale.
-3. Lancer l’app depuis Visual Studio ou via la CLI :
-
-```bash
-dotnet run --project MagasinCentral
-```
-
-L’URL locale sera typiquement : `https://localhost:7230`
-
-⚠️ Pour le cache local, aucune configuration supplémentaire n’est nécessaire.
-
----
-
-## 🧯 Test de tolérance aux pannes
-
-1. Lancer plusieurs instances (`app1`, `app2`, etc.)
-2. Arrêter une instance avec :
-
-```bash
-docker stop app1
-```
-
-3. Observer via Grafana que le service continue (le load balancer redirige vers les autres instances).
-
----
-
-## 🧼 Nettoyage
-
-```bash
-docker compose down -v
-```
-
----
-
-## Auteur
-
-Projet réalisé par **Ahmed Sherif** dans le cadre du cours **LOG430** à l’ÉTS.
+Une fois configuré, les logs se trouvent dans ./kong-logs/access.log
