@@ -1,0 +1,125 @@
+name: CI/CD .NET + Docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  # 1. Build & Test all services
+  build-and-test:
+    name: Build, Test & Publish
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project:
+          - MagasinCentral
+          - CatalogueMcService
+          - InventaireMcService
+          - VenteMcService
+          - AdministrationMcService
+          - EcommerceMcService
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore dependencies for ${{ matrix.project }}
+        run: |
+          dotnet restore ./${{ matrix.project }}/${{ matrix.project }}.csproj
+
+      - name: Build ${{ matrix.project }}
+        run: |
+          dotnet build ./${{ matrix.project }}/${{ matrix.project }}.csproj --configuration Release --no-restore
+
+      - name: Run tests for ${{ matrix.project }}.Tests
+        run: |
+          dotnet test ./${{ matrix.project }}.Tests/${{ matrix.project }}.Tests.csproj --configuration Release --no-build --verbosity normal
+
+  # 2. Build & Push Docker images for each service
+  docker-build-and-push:
+    name: Build & Push Docker images
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - name: magasincentral-api
+            context: ./MagasinCentral
+            dockerfile: Dockerfile
+          - name: catalogue-mc-service
+            context: ./CatalogueMcService
+            dockerfile: Dockerfile
+          - name: inventaire-mc-service
+            context: ./InventaireMcService
+            dockerfile: Dockerfile
+          - name: vente-mc-service
+            context: ./VenteMcService
+            dockerfile: Dockerfile
+          - name: administration-mc-service
+            context: ./AdministrationMcService
+            dockerfile: Dockerfile
+          - name: ecommerce-mc-service
+            context: ./EcommerceMcService
+            dockerfile: Dockerfile
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build image for ${{ matrix.service.name }}
+        run: |
+          docker build \
+            -f ${{ matrix.service.context }}/${{ matrix.service.dockerfile }} \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service.name }}:latest \
+            ${{ matrix.service.context }}
+
+      - name: Push image ${{ matrix.service.name }}
+        run: |
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.service.name }}:latest
+
+  deploy:
+    name: Deploy to VM via SSH
+    needs: docker-build-and-push
+    runs-on: self-hosted
+    steps:
+      - name: SSH & deploy to VM
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          password: ${{ secrets.VM_PASSWORD }}
+          port: 22
+          script: |
+            set -e
+
+            # clone once, then on every run reset to main.
+            if [ ! -d ~/log430-laboratoire-05 ]; then
+              git clone https://github.com/itsahmed98/log430-lab5.git ~/log430-laboratoire-05
+            fi
+            cd ~/log430-laboratoire-05
+            git fetch --all
+            git reset --hard origin/main
+
+            # log into Docker Hub
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" \
+              | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+            # Supprimer les conteneurs problématiques
+            docker ps -aq --filter "name=magasincentral-db" | xargs -r docker rm -f
+            docker ps -aq --filter "ancestor=magasincentral-api" | xargs -r docker rm -f
+
+            # tear down old containers
+            docker-compose down --remove-orphans
+
+            # pull new images (if you push to Docker Hub)
+            docker-compose pull
+
+            # rebuild & start fresh
+            docker-compose up -d --build --remove-orphans
