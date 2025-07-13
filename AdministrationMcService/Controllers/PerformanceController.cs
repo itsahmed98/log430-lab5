@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AdministrationMcService.Controllers
 {
+    /// <summary>
+    /// Controller API contient des endpoints pour générer et récupérer des indicateurs de performance.
+    /// </summary>
     [ApiController]
     [Route("api/v1/administration/performances")]
     public class PerformanceController : ControllerBase
