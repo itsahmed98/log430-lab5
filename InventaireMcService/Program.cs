@@ -45,7 +45,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<InventaireDbContext>();
-    db.Database.Migrate();
+    if (db.Database.ProviderName != null && db.Database.ProviderName.Equals("Npgsql.EntityFrameworkCore.PostgreSQL"))
+        db.Database.Migrate();
 }
 
 if (app.Environment.IsDevelopment())
